@@ -1,0 +1,63 @@
+Video Conferencing Auction (IPL)
+
+Features
+-> Video Conferencing for clients
+-> Client Chat
+-> Real Time Bidding
+-> Payment Gateway Integration
+-> Logs
+
+Basic Features
+-> User Authentication (Client and Auctioneer)
+-> Dashboard for item descriptions
+-> Real Time Bidding with countdown timer
+-> Different Dashboards for buyer(tracking bids) and auctioneer(Manage Auctions)
+-> Send notifications of auction win on email and sms
+
+
+Step 1: Authentication
+-> Database = MongoDB Atlas
+
+Step 2: Video Conferencing
+-> Frontend = WebRTC (https://youtu.be/WmR9IMUD_CY?si=Cxv2oo0W1WhUEgLh)
+-> Backend = Socket.io (Set up signalling server)
+
+Multiple user video conferencing (Mesh Network)
+Use an SFU like Jitsi, Janus, or Mediasoup.
+Clients send their streams to the server, which forwards optimized streams to other participants.
+
+Step 3: Chatting among clients
+
+Step 4: Product Description shown to all clients
+-> Shared Dashboard that displays: Product Details, Current Bid, Auction Timer, Action Buttons(Place Bid)
+-> Real time changes on new bids
+-> Sound Alert
+-> Redis for real time updates
+
+-> Socket.io or Websockets
+
+Step 5: Payment Gateway Integration
+Flow of Payment Integration in the Auction System
+The key steps for integrating a payment gateway upon a successful bid are:
+
+-> User Wins the Auction: Once a client has the highest bid at the end of the auction or when they place a winning bid (after the auction timer runs out), the system should recognize them as the winner.
+-> Payment Trigger: The system will trigger a request to the payment gateway for processing payment for the winning amount.
+-> Redirect to Payment Gateway: The winner is redirected to the payment gateway page (or a payment modal) to complete the payment.
+-> Payment Confirmation: After the user makes the payment, the payment gateway sends a response (success/failure) back to the system.
+-> Order Confirmation & Invoice: Once payment is confirmed, the auction platform marks the transaction as successful and generates an invoice/receipt for the customer.
+-> Notification: Notify both the bidder and auctioneer about the successful payment and proceed with product delivery or service fulfillment.
+
+Step 6: Logs
+-> Display Purse Remaining for each user
+-> Display Products bought for each user
+-> Display Plots based on Logs
+
+Step 7: Auction Social Features
+Share Auctions on Social Media: Allow users to share the auctions they are bidding on via social media (Facebook, Twitter, Instagram).
+
+Step 8: Multi-Currency and Multi-Language Support
+
+Step 9: Deployment (Docker and Kubernetes)
+
+Step 10: CI/CD Pipeline
+
