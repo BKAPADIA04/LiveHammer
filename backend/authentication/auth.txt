@@ -1,0 +1,10 @@
+1) Local Host
+2) Ngrok
+3) MongoDB Atlas
+
+-> Two users
+
+1) Auctioneer
+2) Buyer
+
+OTP Login 
