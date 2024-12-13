@@ -1,4 +1,6 @@
+require("dotenv").config();
 const express = require('express');
+const nodemailer = require('nodemailer');
 
 const otpStore = new Map();
 
@@ -6,6 +8,29 @@ const otpStore = new Map();
 function generateOtp() {
     return Math.floor(100000 + Math.random() * 900000).toString(); // Random 6-digit OTP
   }
+
+// Setup Nodemailer transporter
+const transporter = nodemailer.createTransport({
+  service:'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  auth: {
+    user: process.env.MY_MAIL, 
+    pass: process.env.MY_PASSWORD,
+  },
+  secure: false,
+});
+
+const sendOtpEmail = async (email, otp) => {
+  const mailOptions = {
+    from: process.env.MY_MAIL, 
+    to: email, // Recipient's email address
+    subject: 'Your OTP Code For LiveHammer',
+    text: `Hi! Your OTP code for LiveHammer is: ${otp}`, // Plain text body
+  };
+
+  await transporter.sendMail(mailOptions);
+};
 
 exports.requestOTP = async (req,res) => {
     const { email , phone } = req.body;
@@ -15,8 +40,16 @@ exports.requestOTP = async (req,res) => {
     const otp = generateOtp();
     const expiresAt = Date.now() + 5 * 60 * 1000; // OTP valid for 5 minutes
     otpStore.set(email, { otp, expiresAt });
+    try {
+      // Send OTP email
+      await sendOtpEmail(email, otp);
+      res.status(200).json({ message: 'OTP generated and sent successfully' });
+    } catch (error) {
+      console.error('Error sending OTP email:', error);
+      res.status(500).json({ error: 'Failed to send OTP email' });
+    }
     // console.log(`Generated OTP for ${name}: ${otp}`);
-    res.status(200).json({ message: 'OTP generated successfully', otp: otp });
+    // res.status(200).json({ message: 'OTP generated successfully', otp: otp });
 }
 
 exports.verifyOTP = async(req,res) => {
