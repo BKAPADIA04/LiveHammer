@@ -10,6 +10,10 @@ server.get('/', (req, res) => {
 server.use(cors()); // cross browser
 server.use(express.json()); // reading json
 
+//Router Section
+const userRouter = require('./Authentication/routes/User.js');
+server.use('/user_auth',userRouter.userRoute);
+
 server.listen(port, () => {
-  console.log(`iNoteBook App listening on port ${port}`)
+  console.log(`LiveHammer App listening on port ${port}`)
 })
