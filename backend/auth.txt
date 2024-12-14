@@ -4,7 +4,11 @@
 
 -> Two users
 
-1) Auctioneer
+1) Auctioneer (Only one admin)
 2) Buyer
 
-OTP Login 
+OTP Login (Done)
+
+OTP -> Bcrypt
+Database
+Quick Password Delete
