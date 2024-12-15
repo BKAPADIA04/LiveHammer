@@ -59,12 +59,24 @@ exports.requestOTP = async (req,res) => {
     // otpStore.set(email, { otp, expiresAt });
     try {
       // Save the OTP and email to the database
-      const authInfo = await Auth.findOneAndUpdate(
-        { email: email }, // Query to find the document by email
-        { otp: bcryptOTP, expiresAt: Date.now() + 5 * 60 * 1000 }, // Update OTP and expiration
-        { new: true, upsert: true } // Options: return the updated doc and create if it doesn't exist
-      );
-      const doc = await authInfo.save();
+      const existingDoc = await Auth.findOne({ 'email' : email });
+
+      if (existingDoc) {
+        // Update existing document
+        existingDoc.otp = bcryptOTP;
+        existingDoc.expiresAt = Date.now() + 5 * 60 * 1000;
+        await existingDoc.save();
+        console.log('OTP updated successfully for existing email');
+      } else {
+        // Create new document
+        const newDoc = new Auth({
+          email: email,
+          otp: bcryptOTP,
+          expiresAt: Date.now() + 5 * 60 * 1000,
+        });
+        await newDoc.save();
+        console.log('New document created and OTP set');
+      }
     
       try {
         // Send OTP email
