@@ -8,10 +8,10 @@ otpRouter.get('/',(req,res) =>
     res.send("Onto the Authentication Page!");
 });
 
-otpRouter.post('/requestOTP',OTP.requestOTP);
+otpRouter.post('/user/requestOTP',OTP.requestOTP);
 
-otpRouter.post('/verifyOTP',OTP.verifyOTP);
+otpRouter.post('/user/verifyOTP',OTP.verifyOTP);
 
-
+otpRouter.post('/admin/',OTP.adminAuth);
 
 exports.otpRoute = otpRouter;

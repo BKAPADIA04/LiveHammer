@@ -136,3 +136,29 @@ exports.verifyOTP = async(req,res) => {
         return res.status(401).json({ error: 'Invalid OTP' });
     }
 }
+
+
+exports.adminAuth = async(req,res) => {
+  const errors = validationResult(req);
+  const arr = errors.array();
+  let success = true;
+  if (!errors.isEmpty()) {
+    success = false;
+    return res.status(400).json({ success:success,error: arr });
+  }
+  const { username, password } = req.body;
+
+  if (!username  || !password) {
+    return res.status(400).json({ error: 'Username and Password are required' });
+  }
+
+  const adminUser = process.env.USERNAME;
+  const adminPass = process.env.PASSWORD;
+
+  if((adminUser === username) && (adminPass === password)) {
+    return res.status(200).json({'message' : 'Welcome, LiveHammer Admin!'});
+  }
+  else {
+    return res.status(400).json({'Error' : 'Please try to login with correct credentials'});
+  }
+}

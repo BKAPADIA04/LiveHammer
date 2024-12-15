@@ -14,7 +14,7 @@ server.use(express.json()); // reading json
 
 //Router Section
 const otpRouter = require('./Authentication/routes/OTP.js');
-server.use('/user_auth',otpRouter.otpRoute);
+server.use('/auth',otpRouter.otpRoute);
 
 server.listen(port, () => {
   console.log(`LiveHammer App listening on port ${port}`)
