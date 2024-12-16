@@ -1,7 +1,7 @@
-const connectToMongo_OTP = require('./Authentication/db.js');
+const connectToMongo=require('./db.js');
 const express = require('express');
 const cors = require('cors'); // cross browser
-connectToMongo_OTP();
+connectToMongo(); 
 
 const server = express();
 const port = 8080;

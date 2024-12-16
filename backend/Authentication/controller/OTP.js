@@ -1,8 +1,10 @@
 require("dotenv").config();
+const {getOTPModel} = require("../../models.js");
 
-const OTP = require("../model/OTP.js");
-const Auth = OTP.Authentication;
-
+// const OTP = require("../model/OTP.js");
+// const Auth = OTP.Authentication;
+const Auth = getOTPModel();
+const mongoose = require('mongoose');
 const express = require('express');
 const nodemailer = require('nodemailer');
 const bcrypt = require("bcrypt");
@@ -38,6 +40,8 @@ const sendOtpEmail = async (email, otp) => {
   await transporter.sendMail(mailOptions);
 };
 
+// const otpConnection = mongoose.connection.useDb("OTP");
+// const Auth = otpConnection.model("OtpAuthentication", otpSchema);
 exports.requestOTP = async (req,res) => {
     const errors = validationResult(req);
     const arr = errors.array();
@@ -57,6 +61,9 @@ exports.requestOTP = async (req,res) => {
     const bcryptOTP = await bcrypt.hash(otp, salt);
     // const expiresAt = Date.now() + 5 * 60 * 1000; // OTP valid for 5 minutes
     // otpStore.set(email, { otp, expiresAt });
+
+    // console.log(email,otp);
+    
     try {
       // Save the OTP and email to the database
       const existingDoc = await Auth.findOne({ 'email' : email });
