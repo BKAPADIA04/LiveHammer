@@ -8,8 +8,12 @@ userRouter.get('/',(req,res) =>
     res.send("Onto the User Details Page!");
 });
 
-userRouter.post('/user/signup',User.createUser);
+userRouter.post('/signup',User.createUser);
 
-userRouter.post('/user/login',User.loginUser);
+userRouter.post('/login',User.loginUser);
+
+userRouter.post('/search',User.searchUser);
+
+userRouter.post('/decode',User.decodeUser);
 
 exports.userRoute = userRouter;

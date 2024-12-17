@@ -12,3 +12,7 @@ User Schema
 
 
 Make another Schema for admin
+
+// first api - search the uniqueness of email and phone (in User)
+// second and third api - create and verify OTP (in Authentication)
+// fourth api - create User(in User)

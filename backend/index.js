@@ -13,8 +13,14 @@ server.use(cors()); // cross browser
 server.use(express.json()); // reading json
 
 //Router Section
+//Authentication
 const otpRouter = require('./Authentication/routes/OTP.js');
 server.use('/auth',otpRouter.otpRoute);
+
+//User
+const userRouter = require('./User/routes/User.js');
+server.use('/user',userRouter.userRoute);
+
 
 server.listen(port, () => {
   console.log(`LiveHammer App listening on port ${port}`)

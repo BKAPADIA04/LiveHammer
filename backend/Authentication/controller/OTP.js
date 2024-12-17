@@ -53,7 +53,8 @@ exports.requestOTP = async (req,res) => {
 
     const { email } = req.body;
     if (!email ) {
-        return res.status(400).json({ error: 'Email ID is required' });
+        success = false;
+        return res.status(400).json({ success:success,error: 'Email ID is required' });
       }
     const otp = generateOtp();
 
@@ -90,14 +91,16 @@ exports.requestOTP = async (req,res) => {
         await sendOtpEmail(email, otp);
     
         // Respond with success message
-        res.status(200).json({ message: 'OTP generated and sent successfully' });
+        res.status(200).json({ success:success,message: 'OTP generated and sent successfully' });
       } catch (emailError) {
+        success = false;
         console.error('Error sending OTP email:', emailError);
-        res.status(500).json({ error: 'Failed to send OTP email' });
+        res.status(500).json({ success:success,error: 'Failed to send OTP email' });
       }
     } catch (dbError) {
+      success = false;
       console.error('Error saving OTP email:', dbError);
-      res.status(500).json({ error: 'Failed to save OTP email' });
+      res.status(500).json({ success:success,error: 'Failed to save OTP email' });
     }
    // console.log(`Generated OTP for ${name}: ${otp}`);
     // res.status(200).json({ message: 'OTP generated successfully', otp: otp });
@@ -116,13 +119,15 @@ exports.verifyOTP = async(req,res) => {
     const { email, otp } = req.body;
 
     if (!email  || !otp) {
-      return res.status(400).json({ error: 'Email and OTP are required' });
+      success = false;
+      return res.status(400).json({ success:success,error: 'Email and OTP are required' });
     }
 
     // const storedOtpData = otpStore.get(email);
     let storedOtpData = await Auth.findOne({'email' : email});
     if (!storedOtpData) {
-        return res.status(400).json({ error: 'OTP not found or expired' });
+        success = false;
+        return res.status(400).json({ success:success,error: 'OTP not found or expired' });
       }
     // const { otp: storedOtp, expiresAt } = storedOtpData;
 
@@ -138,9 +143,10 @@ exports.verifyOTP = async(req,res) => {
     if (otpCompare) {
         // otpStore.delete(email); // Clear OTP after successful verification
         const result = await Auth.deleteOne({ 'email': email });
-        return res.status(200).json({ message: 'OTP verified successfully' });
+        return res.status(200).json({ success:success,message: 'OTP verified successfully' });
     } else {
-        return res.status(401).json({ error: 'Invalid OTP' });
+        success = false;
+        return res.status(401).json({ success:success,error: 'Invalid OTP' });
     }
 }
 
@@ -156,16 +162,18 @@ exports.adminAuth = async(req,res) => {
   const { username, password } = req.body;
 
   if (!username  || !password) {
-    return res.status(400).json({ error: 'Username and Password are required' });
+    success = false;
+    return res.status(400).json({ success:success,error: 'Username and Password are required' });
   }
 
   const adminUser = process.env.USERNAME;
   const adminPass = process.env.PASSWORD;
 
   if((adminUser === username) && (adminPass === password)) {
-    return res.status(200).json({'message' : 'Welcome, LiveHammer Admin!'});
+    return res.status(200).json({success:success,'message' : 'Welcome, LiveHammer Admin!'});
   }
   else {
-    return res.status(400).json({'Error' : 'Please try to login with correct credentials'});
+    success = false;
+    return res.status(400).json({success:success,'error' : 'Please try to login with correct credentials'});
   }
 }
