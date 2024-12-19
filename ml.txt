@@ -1,0 +1,37 @@
+Object Recognition
+-> YOLO
+-> Faster R-CNN
+
+Features
+-> Picking up Object
+-> Zooming into Objects
+-> Object Interaction
+
+Chatbot
+-> Rasa / Dialogflow
+
+Prompts
+-> "Pick an object," "Show an object," "Find object location"
+-> Multiple Object Detection
+-> Interaction with objects : drag" objects around the image, rotate them, or resize them 
+("Move the bottle to the left" or "Rotate the apple" )
+-> Object Counting
+-> Background Removal and Segmentation ( "Remove the background of the apple" can use segmentation models like Mask R-CNN to extract the apple from the background.
+)
+-> Voice Command Integration (speech-to-text technology (e.g., Google Speech API, Whisper).)
+-> "Find all red objects"
+-> Users can upload a set of images with a specific object they want the system to detect (e.g., "Detect my favorite product").
+-> OCR (Optical Character Recognition) "Read the text on the bottle" could extract and return the text present on the bottle in the image.
+
+
+Advanced
+-> Real-Time Object Detection
+("Show the bottle" could immediately highlight the bottle in a live video stream or webcam feed.
+)
+-> User: "Remove the apple, then replace it with a banana."
+-> Object Movement Tracking
+Track the movement of objects across video frames or a series of images. This would require adding an object tracking algorithm (like SORT or Deep SORT).
+Example: "Where is the apple moving?" could return the path the apple took in the video.
+
+Final
+-> Find Clips

@@ -1,0 +1,9 @@
+-> Frontend integration with webrtc and socket io
+-> Explore various features (screen sharing,etc)
+-> Chatapp
+
+
+->RTC Peer Connection
+->RTC ICE Candidate
+
+->Face Detection API
