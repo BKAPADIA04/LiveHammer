@@ -26,6 +26,8 @@ module.exports = (server) => {
       // Emit a response
       // socket.emit('room:join', `Server received: ${data}`);
       // or
+      io.to(room).emit('user:joined', {'email': email, 'room': room, 'socketId': socket.id});
+      socket.join(room);
       io.to(socket.id).emit('room:join', data);
     });
 
