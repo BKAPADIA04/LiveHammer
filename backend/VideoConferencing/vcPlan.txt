@@ -7,3 +7,9 @@
 ->RTC ICE Candidate
 
 ->Face Detection API
+
+
+1) ICE Server Connection to get public IP Address
+2) Signalling Server to connect two computers
+3) Mesh
+4) SFU
