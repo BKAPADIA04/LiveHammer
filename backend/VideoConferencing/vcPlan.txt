@@ -13,3 +13,10 @@
 2) Signalling Server to connect two computers
 3) Mesh
 4) SFU
+
+-> io = io is the main Socket.IO server instance. It represents the server-side socket and is used to manage communication at a global level, such as:
+Broadcasting events to all clients or clients in a specific room.
+Listening for client connections.
+Managing rooms and namespaces.
+
+-> socket = socket represents the individual connection between the server and a specific client. Each client gets its own socket instance when it connects to the server.

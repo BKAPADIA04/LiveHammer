@@ -29,11 +29,11 @@ server.use('/auth',otpRouter.otpRoute);
 const userRouter = require('./User/routes/User.js');
 server.use('/user',userRouter.userRoute);
 
-//Video Conferencing
+//Video Conferenicng
 const videoRouter = require('./VideoConferencing/routes/Video.js');
 server.use('/video',videoRouter.videoRoute);
 
 
-server.listen(port, () => {
+httpServer.listen(port, () => {
   console.log(`LiveHammer App listening on port ${port}`)
 })
