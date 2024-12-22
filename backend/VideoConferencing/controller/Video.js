@@ -30,7 +30,16 @@ module.exports = (server) => {
       socket.join(room);
       io.to(socket.id).emit('room:join', data);
     });
+    
+    socket.on('user:call',(data) => {
+      const {to,offer} = data;
+      io.to(to).emit('incoming:call',{from:socket.id, offer : offer});
+    });
 
+    socket.on('call:accepted',(data) => {
+      const {to,answer} = data;
+      io.to(to).emit('call:accepted',{from:socket.id, answer:answer})
+    });
     // Handle disconnection
     socket.on('disconnect', () => {
       console.log('User disconnected:', socket.id);

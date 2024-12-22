@@ -4,13 +4,15 @@ import './App.css';
 import Video from './components/Video';
 import Home from './components/Home';
 import Credentials from './components/Credentials';
+import Agora from './components/Agora';
 
 
 const AppRoutes = () => {
   const routes = useRoutes([
     { path: '/', element: <Home /> },
     { path: '/video/', element: <Credentials /> },
-    { path:'/video/:room', element: <Video /> }
+    { path:'/video/:room', element: <Video /> },
+    { path:'/agora', element: <Agora /> }
   ]);
   return routes;
 };

@@ -10,9 +10,9 @@ const path = require('path');
 const server = express();
 const port = 8080;
 
-const httpServer = http.createServer(server); // connecting http server to express server
-const socketServer = require('./VideoConferencing/controller/Video.js');
-socketServer(httpServer); // Pass the server instance to the Socket.IO module
+// const httpServer = http.createServer(server); // connecting http server to express server
+// const socketServer = require('./VideoConferencing/controller/Video.js');
+// socketServer(httpServer); // Pass the server instance to the Socket.IO module
 
 server.get('/', (req, res) => {
   res.send('Welcome to LiveHammer!')
@@ -34,6 +34,6 @@ const videoRouter = require('./VideoConferencing/routes/Video.js');
 server.use('/video',videoRouter.videoRoute);
 
 
-httpServer.listen(port, () => {
+server.listen(port, () => {
   console.log(`LiveHammer App listening on port ${port}`)
 })

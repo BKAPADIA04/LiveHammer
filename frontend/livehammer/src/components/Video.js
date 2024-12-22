@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect,useState } from 'react'
 import '../css/Video.css';
 import { useSocket } from '../context/SocketProviderContext';
+import peer from '../service/peerService';
 import ReactPlayer from 'react-player';
 
 export default function Video() {
@@ -15,22 +16,58 @@ export default function Video() {
     setRemoteSocketId(socketId);
   },[setRemoteSocketId]);
 
-  const handleCall = useCallback(async() => {
+  const handleCallInitialize = useCallback(async() => {
+    const stream = await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+    const offer = await peer.getOffer();
+    socket.emit('user:call',{ to : remoteSocketId, offer : offer});
+    setLocalStream(stream);
+  },[remoteSocketId, socket]);
+
+  const handleIncomingCall = useCallback(async(data) => {
+    const {from,offer} = data;
+    setRemoteSocketId(from);
     const stream = await navigator.mediaDevices.getUserMedia({video:true,audio:true});
     setLocalStream(stream);
-  },[setLocalStream]);
+    const ans = await peer.getAnswer(offer);
+    socket.emit('call:accepted',{to:from,answer:ans});
+  },[socket]);
+
+
+  const handleCallAccepted = useCallback(async(data) => {
+    const {from,answer} = data;
+    console.log(peer);
+    if(peer.signalingState === 'have-local-offer') {
+    await peer.setLocalDescription(answer);
+    console.log('Call accepted from:',from);
+    }
+    else console.error('Invalid signaling state:', peer.signalingState);
+  },[]); 
 
   useEffect(() => {
     socket.on('user:joined',(data) => {
       handleJoinedUser(data);
   });
 
+    socket.on('incoming:call',(data) => {
+      handleIncomingCall(data);
+    });
+
+    socket.on('call:accepted',(data) => {
+      handleCallAccepted(data);
+    });
+
   return () => {
     socket.off('user:joined',(data) => {
       handleJoinedUser(data);
     });
+    socket.off('incoming:call',(data) => {
+      handleIncomingCall(data);
+    });
+    socket.off('call:accepted',(data) => {
+      handleCallAccepted(data);
+    });
   }
-},[socket,handleJoinedUser]);
+},[socket, handleJoinedUser, handleIncomingCall, handleCallAccepted]);
 
   return (
     <>
@@ -51,7 +88,7 @@ export default function Video() {
             {remoteSocketId && (
               <button
                 className="btn btn-primary btn-lg"
-                onClick={handleCall}
+                onClick={handleCallInitialize}
               >
                 Start Call
               </button>
