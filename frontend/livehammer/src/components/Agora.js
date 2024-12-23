@@ -96,7 +96,8 @@ export default function Agora() {
         <div id="local-player" className = 'col-12 col-md-8' style={{ aspectRatio: '16/9',
         backgroundColor: '#000',
         borderRadius: '8px',
-        overflow: 'hidden'}}></div>
+        overflow: 'hidden'}}>
+        </div>
         <div id="remote-player" className = 'col-12 col-md-8' style={{ aspectRatio: '16/9',
             backgroundColor: '#000',
             borderRadius: '8px',
