@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import auctionImageLeft from '../images/otp_back_left.jpg';
 // import '../css/custom.css';
 
 export default function SignupInfo() {
@@ -75,7 +76,7 @@ export default function SignupInfo() {
     };
 
     return (
-        <div className="container min-vh-100 d-flex justify-content-center align-items-center">
+        <div className="container min-vh-100 d-flex justify-content-center align-items-center" >
             <div className="card shadow-lg p-4 custom-card w-100" style={{ maxWidth: '600px' }}>
                 <h2 className="text-center mb-4">User Information</h2>
                 <form onSubmit={handleSubmit}>

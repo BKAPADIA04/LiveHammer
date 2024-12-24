@@ -2,6 +2,9 @@
 
 /* Card Styles */
 
+body {
+    background: #244c77;
+}
 .card {
     background: #2b2b2b;
     border-radius: 10px;
@@ -74,4 +77,25 @@ h2 {
     border-radius: 5px;
     font-size: 0.9rem;
     text-align: center;
+}
+.otp-container {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.otp-box {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 0 5px;
+    outline: none;
+}
+
+.otp-box:focus {
+    border-color: #007bff;
 }
