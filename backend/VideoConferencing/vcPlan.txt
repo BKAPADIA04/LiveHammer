@@ -20,3 +20,11 @@ Listening for client connections.
 Managing rooms and namespaces.
 
 -> socket = socket represents the individual connection between the server and a specific client. Each client gets its own socket instance when it connects to the server.
+
+
+
+-> Agora API
+1) Setup
+2) env
+3) UI (Call,Cancel,Volume,ScreenShare)
+4) Chat

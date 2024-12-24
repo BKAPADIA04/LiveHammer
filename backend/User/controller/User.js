@@ -20,17 +20,16 @@ exports.searchUser = async(req,res) => {
       success = false;
       return res.status(400).json({ success:success,error: arr });
     }
-    const {email,phone} = req.body;
-    if (!email || !phone) {
+    const {email} = req.body;
+    if (!email) {
         success = false;
-        return res.status(400).json({ success:success,error: 'Email ID and Phone Number are required' });
+        return res.status(400).json({ success:success,error: 'Email ID is required' });
       }
     
     try {
         const existingUser = await User.findOne({ 
             $and: [
               { 'email': email }, 
-              { 'phone': phone }
             ]
           });
         
@@ -92,16 +91,15 @@ exports.loginUser = async(req,res) => {
       success = false;
       return res.status(400).json({ success:success,error: arr });
     }
-    const {email,phone} = req.body;
-    if (!email || !phone) {
+    const {email} = req.body;
+    if (!email) {
         success = false;
-        return res.status(400).json({ success:success,error: 'Email ID and Phone Number are required' });
+        return res.status(400).json({ success:success,error: 'Email ID is required' });
       }
       try {
         const existingUser = await User.findOne({ 
             $and: [
-              { 'email': email }, 
-              { 'phone': phone }
+              { 'email': email },
             ]
           });
         
@@ -125,7 +123,6 @@ exports.decodeUser = async (req,res) => {
       const user = await User.findOne({ 
         $or: [
           { 'email': req.body.email }, 
-          { 'phone': req.body.phone },
           {_id : req.body.id}
         ]
       });

@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors'); // cross browser
 const http = require('http');
 const path = require('path');
-// connectToMongo(); 
+connectToMongo(); 
 
 
 // This approach ensures that the server can handle both regular HTTP traffic and other protocols (like WebSocket) on the same port.
