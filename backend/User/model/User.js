@@ -49,7 +49,6 @@ const userSchema = new Schema({
     //   },
       itemName: {
         type: String,
-        required: true,
       },
       price: {
         type: Number,
@@ -62,18 +61,9 @@ const userSchema = new Schema({
       },
     },
   ],
-  wishlist: [
-    {
-    //   itemId: {
-    //     type: mongoose.Schema.Types.ObjectId, // References the auctioned item's ID
-    //     ref: 'Item', // Refers to the items in another schema
-    //   },
-      itemName: {
-        type: String, // Name of the item
-        required: true,
-      },
-    },
-  ],
+  wishlist: {
+    type: String, // Array of item names
+  },
   address: {
     city: { type: String },
     state: { type: String },

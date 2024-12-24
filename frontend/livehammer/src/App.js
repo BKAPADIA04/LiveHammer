@@ -6,6 +6,8 @@ import Home from './components/Home';
 import Credentials from './components/Credentials';
 import Agora from './components/Agora';
 import Login from './components/Login';
+import Signup from './components/Signup';
+import SignupInfo from './components/SignupInfo';
 
 
 const AppRoutes = () => {
@@ -14,7 +16,9 @@ const AppRoutes = () => {
     { path: '/video/', element: <Credentials /> },
     { path:'/video/:room', element: <Video /> },
     { path:'/agora', element: <Agora /> },
-    { path:'/login',element:<Login/>}
+    { path:'/login',element:<Login/>},
+    { path:'/signup',element:<Signup/>},
+    { path: '/signup/information', element: <SignupInfo/> },
   ]);
   return routes;
 };

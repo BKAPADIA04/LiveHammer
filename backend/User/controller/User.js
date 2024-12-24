@@ -57,14 +57,13 @@ exports.createUser = async(req,res) => {
       success = false;
       return res.status(400).json({ success:success,error: arr });
     }
-    const {email,phone} = req.body;
-    if (!email || !phone) {
+    const {email} = req.body;
+    if (!email) {
         success = false;
-        return res.status(400).json({ success:success,error: 'Email ID and Phone Number are required' });
+        return res.status(400).json({ success:success,error: 'Email ID is required' });
       }
     const emailSearch = await User.findOne({email:email});
-    const phoneSearch = await User.findOne({phone:phone});
-    if(emailSearch || phoneSearch) {
+    if(emailSearch) {
         success = false;
         console.log("User with given credentials exists");
         res.status(400).send({success:success,message:"User with given credentials exists"});
