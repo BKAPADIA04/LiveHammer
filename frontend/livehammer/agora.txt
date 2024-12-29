@@ -1,0 +1,3 @@
+-> Setup a proper video conferencing ui
+-> Add options Call,Cancel , Video , Audio Stream and other if possible
+-> Socket Integration

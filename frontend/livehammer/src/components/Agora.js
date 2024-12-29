@@ -1,5 +1,6 @@
 import React,{useCallback, useState,useEffect} from 'react';
 import AgoraRTC from 'agora-rtc-sdk-ng';
+import '../css/agora.css';
 // require("dotenv").config();
 
 export default function Agora() {
@@ -9,7 +10,7 @@ export default function Agora() {
     console.log(appID);
     // const appCertificate = process.env.AGORA_PRIMARY_CERTIFICATE;
     // const agoraToken = process.env.AGORA_TEMP_TOKEN;
-    const agoraToken = "006846577752fa84fcbabed82e0fc1cfd6dIADBXYm7D+MyiYyHvV2Jl5ekUTz7dZdNCzj6le0PDDm7dAx+f9gAAAAAIgBEZmcMfUtpZwQAAQB9S2lnAgB9S2lnAwB9S2lnBAB9S2ln";
+    const agoraToken = "006846577752fa84fcbabed82e0fc1cfd6dIAAWACFRDDXgdgk+tlsUCOOzp07B2d/E8bAcoP5QLy5cGwx+f9gAAAAAIgACrHS3bjByZwQAAQBuMHJnAgBuMHJnAwBuMHJnBABuMHJn";
     console.log(agoraToken);
     const channel = 'test';
     const uid = 0;
@@ -40,13 +41,29 @@ export default function Agora() {
 
     const handleUserJoined = async(user,mediaType) => {
         const uid = user.uid;
-        console.log("User Joined: ", user);
+        console.log("User Joined: ", uid);
+
+        let playerContainer = document.getElementById(`remote-player-${uid}`);
+        if(!playerContainer)
+        {
+            playerContainer = document.createElement('div');
+            playerContainer.className = 'col-12 col-md-8';
+            playerContainer.id = `remote-player-${uid}`;
+            playerContainer.style = `
+              aspect-ratio: 16/9;
+              background-color: #000;
+              border-radius: 8px;
+              overflow: hidden;
+              margin: 10px;
+            `;
+            document.getElementById('remote-player-container').appendChild(playerContainer);
+        }
         remoteUsers[user.uid] = user ;
         await client.subscribe(user, mediaType)
         if(mediaType === 'video')
         {
             const videoTrack = user.videoTrack;
-            videoTrack.play(`remote-player`);
+            videoTrack.play(`remote-player-${uid}`);
         }
 
         if(mediaType === 'audio')
@@ -89,20 +106,41 @@ export default function Agora() {
     //   }, [client, joinAndDisplayLocalStream, localTracks]);
 
     return (
-        <div>
-        <button onClick={joinStream}>CALL</button>
-        <button onClick={cancelCall}>Cancel</button>
-        <h2>Agora Video Chat</h2>
-        <div id="local-player" className = 'col-12 col-md-8' style={{ aspectRatio: '16/9',
-        backgroundColor: '#000',
-        borderRadius: '8px',
-        overflow: 'hidden'}}>
+        <>  
+        <div className="video-chat-container">
+    {/* Header */}
+    <div className="header">
+        <h1>📺 LiveHammer</h1>
+    </div>
+
+    {/* Auctioneer's Stream */}
+    <div className="auctioneer-container">
+        <div id="auctioneer-player" className="video-box auctioneer-player">
+            <span className="stream-label">Auctioneer</span>
         </div>
-        <div id="remote-player" className = 'col-12 col-md-8' style={{ aspectRatio: '16/9',
-            backgroundColor: '#000',
-            borderRadius: '8px',
-            overflow: 'hidden'}}></div>
-            {/* Other UI elements */}
+    </div>
+
+    {/* Local Stream */}
+    <div className="local-container">
+        <div id="local-player" className="video-box-1 local-player">
+            <span className="status-indicator"></span>
         </div>
+    </div>
+
+    {/* Remote Users Carousel */}
+    <div className="remote-users-container">
+        <div id="remote-player-container" className="remote-users-carousel">
+            {/* Render Remote User Boxes Dynamically */}
+        </div>
+    </div>
+
+    {/* Controls */}
+    <div className="controls">
+        <button className="control-button" onClick={joinStream} >📞 Call</button>
+        <button className="control-button end-call" onClick={cancelCall}>❌ Cancel</button>
+    </div>
+</div>
+    
+        </>
       );    
 }
