@@ -22,13 +22,28 @@ export default function Agora() {
     const joinAndDisplayLocalStream = useCallback(async() => {
 
         client.on('user-published', handleUserJoined);
+        client.on("user-unpublished", handleUserLeft);
 
         await client.join(appID, channel, agoraToken, uid);
+
+        // const cameras = await AgoraRTC.getCameras();
+        // console.log(cameras);
         const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
         await client.publish([audioTrack, videoTrack]);
         setLocalTracks([audioTrack, videoTrack]);
         videoTrack.play(`local-player`);
     },[agoraToken, appID, client]);
+
+    const handleUserLeft = async(user) => {
+        const uid = user.uid;
+        console.log("User Left: ", uid);
+        const playerContainer = document.getElementById(`remote-player-${uid}`);
+        if(playerContainer)
+        {
+            playerContainer.remove();
+        }
+        delete remoteUsers[user.uid];
+    }
 
     const cancelCall = useCallback(async() => {
         await client.leave();
@@ -110,34 +125,41 @@ export default function Agora() {
         <div className="video-chat-container">
     {/* Header */}
     <div className="header">
-        <h1>📺 LiveHammer</h1>
+
+        <h1 className='text-white fw-bold text-center p-2'>📺 LiveHammer 💸 💰 🔨</h1>
     </div>
 
     {/* Auctioneer's Stream */}
     <div className="auctioneer-container">
-        <div id="auctioneer-player" className="video-box auctioneer-player">
-            <span className="stream-label">Auctioneer</span>
+        <div id="auctioneer-player" className="video-box auctioneer-player border border-dark">
+            <span className="stream-label border border-dark">Auctioneer</span>
         </div>
     </div>
 
     {/* Local Stream */}
-    <div className="local-container">
+    <div className="local-container border border-dark">
         <div id="local-player" className="video-box-1 local-player">
             <span className="status-indicator"></span>
+            <span className="stream-label1 border border-dark">Bhavya Kapadia</span>
         </div>
     </div>
 
     {/* Remote Users Carousel */}
     <div className="remote-users-container">
-        <div id="remote-player-container" className="remote-users-carousel">
+      <h4 className="text-black fw-bold text-center mb-3 border-bottom pb-2">Remote Users</h4>
+        <div id="remote-player-container" className="remote-users-carousel border border-dark">
             {/* Render Remote User Boxes Dynamically */}
+            <span className="stream-label2">User</span>
+            <span className="status-indicator"></span>
         </div>
     </div>
 
     {/* Controls */}
     <div className="controls">
-        <button className="control-button" onClick={joinStream} >📞 Call</button>
-        <button className="control-button end-call" onClick={cancelCall}>❌ Cancel</button>
+        <button className="control-button" onClick={joinStream} >Call</button>
+        <button className="control-button" onClick={toggleMic} >Mic</button>
+        <button className="control-button" onClick={toggleCamera} >Camera</button>
+        <button className="control-button end-call" onClick={cancelCall}>Cancel</button>
     </div>
 </div>
     
