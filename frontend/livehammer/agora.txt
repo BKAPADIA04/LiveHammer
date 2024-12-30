@@ -4,4 +4,4 @@
 -> NGROK
 -> Socket Integration
 
--> Custom Names
+-> Custom Names and Profile Backgrounds

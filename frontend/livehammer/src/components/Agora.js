@@ -1,5 +1,6 @@
 import React,{useCallback, useState,useEffect} from 'react';
 import AgoraRTC from 'agora-rtc-sdk-ng';
+import { useNavigate } from "react-router-dom";
 import '../css/agora.css';
 // require("dotenv").config();
 
@@ -10,7 +11,7 @@ export default function Agora() {
     console.log(appID);
     // const appCertificate = process.env.AGORA_PRIMARY_CERTIFICATE;
     // const agoraToken = process.env.AGORA_TEMP_TOKEN;
-    const agoraToken = "006846577752fa84fcbabed82e0fc1cfd6dIAAWACFRDDXgdgk+tlsUCOOzp07B2d/E8bAcoP5QLy5cGwx+f9gAAAAAIgACrHS3bjByZwQAAQBuMHJnAgBuMHJnAwBuMHJnBABuMHJn";
+    const agoraToken = "006846577752fa84fcbabed82e0fc1cfd6dIAD1wqE45jv8Q3LY5020boG62fn/4Bq35Vl2OzmISX/grAx+f9gAAAAAIgCJysHbQ+5zZwQAAQBD7nNnAgBD7nNnAwBD7nNnBABD7nNn";
     console.log(agoraToken);
     const channel = 'test';
     const uid = 0;
@@ -22,7 +23,7 @@ export default function Agora() {
     const joinAndDisplayLocalStream = useCallback(async() => {
 
         client.on('user-published', handleUserJoined);
-        client.on("user-unpublished", handleUserLeft);
+        // client.on("user-unpublished", handleUserLeft);
 
         await client.join(appID, channel, agoraToken, uid);
 
@@ -36,19 +37,53 @@ export default function Agora() {
 
     const handleUserLeft = async(user) => {
         const uid = user.uid;
-        console.log("User Left: ", uid);
-        const playerContainer = document.getElementById(`remote-player-${uid}`);
-        if(playerContainer)
-        {
-            playerContainer.remove();
-        }
-        delete remoteUsers[user.uid];
+        // console.log("User Left: ", uid);
+        // const playerContainer = document.getElementById(`remote-player-${uid}`);
+        // if(playerContainer)
+        // {
+            // playerContainer.remove();
+        // }
+        // delete remoteUsers[user.uid];
     }
 
-    const cancelCall = useCallback(async() => {
-        await client.leave();
-        localTracks.forEach(track => track.stop());
-    },[client, localTracks]);
+    const navigate = useNavigate();
+    const cancelCall = useCallback(async (user) => {
+        const playerContainer = document.getElementById(`remote-player-${uid}`);
+        if (playerContainer) {
+            playerContainer.remove();  // Remove the video box from the UI
+        }
+        delete remoteUsers[user.uid];
+        try {
+            // Leave the channel
+            await client.leave();
+    
+            // Stop and release local tracks
+            if (localTracks.length > 0) {
+                localTracks.forEach((track) => {
+                    track.stop(); // Stop the track
+                    track.close(); // Release the track
+                });
+            }
+    
+            // Remove all remote user elements from the DOM
+            const remotePlayerContainer = document.getElementById('remote-player-container');
+            if (remotePlayerContainer) {
+                remotePlayerContainer.innerHTML = ''; // Clear all remote user elements
+            }
+    
+            // Reset the local state
+            setLocalTracks([]);
+            setIsMicOn(true);
+            setIsCameraOn(true);
+            setIsJoined(false);
+    
+            console.log('Call canceled and resources cleaned up.');
+        } catch (error) {
+            console.error('Error leaving the call:', error);
+        }
+        navigate('/user/dashboard');
+    }, [client, localTracks, navigate]);
+    
 
     const joinStream = async() => {
         await joinAndDisplayLocalStream();
@@ -103,22 +138,28 @@ export default function Agora() {
       };
     
       const toggleMic = () => {
-        setIsMicOn(!isMicOn);
+        if (localTracks[0]) { // Assuming localTracks[0] is the audio track
+            if (isMicOn) {
+                localTracks[0].setEnabled(false); // Mute the microphone
+            } else {
+                localTracks[0].setEnabled(true); // Unmute the microphone
+            }
+            setIsMicOn(!isMicOn);
+        }
+
       };
     
       const toggleCamera = () => {
-        setIsCameraOn(!isCameraOn);
+        if (localTracks[1]) { // Assuming localTracks[1] is the video track
+            if (isCameraOn) {
+                localTracks[1].setEnabled(false); // Turn off the camera
+            } else {
+                localTracks[1].setEnabled(true); // Turn on the camera
+            }
+            setIsCameraOn(!isCameraOn);
+        }
       };
-    
 
-    //   useEffect(() => {
-    //     joinAndDisplayLocalStream();
-    //     // Cleanup: leave channel when component unmounts
-    //     return () => {
-    //       client.leave();
-    //       localTracks.forEach(track => track.stop());
-    //     };
-    //   }, [client, joinAndDisplayLocalStream, localTracks]);
 
     return (
         <>  
@@ -156,9 +197,26 @@ export default function Agora() {
 
     {/* Controls */}
     <div className="controls">
-        <button className="control-button" onClick={joinStream} >Call</button>
-        <button className="control-button" onClick={toggleMic} >Mic</button>
-        <button className="control-button" onClick={toggleCamera} >Camera</button>
+    <button className="control-button btn-lg" onClick={joinStream}>Call</button>
+        <div className="d-flex justify-content-center align-items-center gap-3">
+            {/* Toggle Microphone Button */}
+            <button 
+                className={`btn ${isMicOn ? 'btn-danger' : 'btn-success'} d-flex btn-lg align-items-center`} 
+                onClick={toggleMic}
+            >
+                <i className={`bi ${isMicOn ? 'bi-mic-fill' : 'bi-mic-mute-fill'} btn-lg me-2`} ></i>
+                {isMicOn ? 'Mute' : 'Unmute'}
+            </button>
+
+            {/* Toggle Camera Button */}
+            <button 
+                className={`btn ${isCameraOn ? 'btn-danger' : 'btn-success'} d-flex align-items-center`} 
+                onClick={toggleCamera}
+            >
+                <i className={`bi ${isCameraOn ? 'bi-camera-video-fill' : 'bi-camera-video-off-fill'} me-2`}></i>
+                {isCameraOn ? 'Turn Off Camera' : 'Turn On Camera'}
+            </button>
+        </div>
         <button className="control-button end-call" onClick={cancelCall}>Cancel</button>
     </div>
 </div>
