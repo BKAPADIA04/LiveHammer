@@ -2,6 +2,7 @@ import React,{useCallback, useState,useEffect} from 'react';
 import AgoraRTC from 'agora-rtc-sdk-ng';
 import { useNavigate } from "react-router-dom";
 import '../css/agora.css';
+import { useSocket } from '../context/SocketProviderContext';
 // require("dotenv").config();
 
 export default function Agora() {
@@ -11,7 +12,7 @@ export default function Agora() {
     console.log(appID);
     // const appCertificate = process.env.AGORA_PRIMARY_CERTIFICATE;
     // const agoraToken = process.env.AGORA_TEMP_TOKEN;
-    const agoraToken = "006846577752fa84fcbabed82e0fc1cfd6dIAD1wqE45jv8Q3LY5020boG62fn/4Bq35Vl2OzmISX/grAx+f9gAAAAAIgCJysHbQ+5zZwQAAQBD7nNnAgBD7nNnAwBD7nNnBABD7nNn";
+    const agoraToken = "006846577752fa84fcbabed82e0fc1cfd6dIAB/eT6dYV71CiL84xN4FCEqHDl26B/94yP9/7FLxMSIjwx+f9gAAAAAIgDPOpKykYZ1ZwQAAQCRaFVpAgCRaFVpAwCRaFVpBACRaFVp";
     console.log(agoraToken);
     const channel = 'test';
     const uid = 0;
@@ -19,6 +20,20 @@ export default function Agora() {
     const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
     const [localTracks, setLocalTracks] = useState([]);
     let remoteUsers = {};
+
+
+    const socket = useSocket();
+
+    useEffect(() => {
+        socket.on('agora:joined', (data) => {
+            console.log(data);
+        });
+        return () => {
+            socket.off('agora:joined', (data) => {
+                console.log(data);
+            });
+        }
+    },[socket]);
 
     const joinAndDisplayLocalStream = useCallback(async() => {
 
@@ -121,6 +136,11 @@ export default function Agora() {
             const audioTrack = user.audioTrack;
             audioTrack.play();
         }
+
+        socket.emit('agora:join', {
+            channel: channel,
+            uid:uid
+        });
     }
 
 
@@ -197,30 +217,30 @@ export default function Agora() {
 
     {/* Controls */}
     <div className="controls">
-    <button className="control-button btn-lg" onClick={joinStream}>Call</button>
-        <div className="d-flex justify-content-center align-items-center gap-3">
-            {/* Toggle Microphone Button */}
-            <button 
-                className={`btn ${isMicOn ? 'btn-danger' : 'btn-success'} d-flex btn-lg align-items-center`} 
-                onClick={toggleMic}
-            >
-                <i className={`bi ${isMicOn ? 'bi-mic-fill' : 'bi-mic-mute-fill'} btn-lg me-2`} ></i>
-                {isMicOn ? 'Mute' : 'Unmute'}
-            </button>
+        <button className="control-button btn-lg" onClick={joinStream}>Call</button>
+            <div className="d-flex justify-content-center align-items-center gap-3">
+                {/* Toggle Microphone Button */}
+                <button 
+                    className={`btn ${isMicOn ? 'btn-danger' : 'btn-success'} d-flex btn-lg align-items-center`} 
+                    onClick={toggleMic}
+                >
+                    <i className={`bi ${isMicOn ? 'bi-mic-fill' : 'bi-mic-mute-fill'} btn-lg me-2`} ></i>
+                    {isMicOn ? 'Mute' : 'Unmute'}
+                </button>
 
-            {/* Toggle Camera Button */}
-            <button 
-                className={`btn ${isCameraOn ? 'btn-danger' : 'btn-success'} d-flex align-items-center`} 
-                onClick={toggleCamera}
-            >
-                <i className={`bi ${isCameraOn ? 'bi-camera-video-fill' : 'bi-camera-video-off-fill'} me-2`}></i>
-                {isCameraOn ? 'Turn Off Camera' : 'Turn On Camera'}
-            </button>
+                {/* Toggle Camera Button */}
+                <button 
+                    className={`btn ${isCameraOn ? 'btn-danger' : 'btn-success'} d-flex align-items-center`} 
+                    onClick={toggleCamera}
+                >
+                    <i className={`bi ${isCameraOn ? 'bi-camera-video-fill' : 'bi-camera-video-off-fill'} me-2`}></i>
+                    {isCameraOn ? 'Turn Off Camera' : 'Turn On Camera'}
+                </button>
+            </div>
+            <button className="control-button end-call" onClick={cancelCall}>Cancel</button>
         </div>
-        <button className="control-button end-call" onClick={cancelCall}>Cancel</button>
     </div>
-</div>
     
-        </>
+    </>
       );    
 }

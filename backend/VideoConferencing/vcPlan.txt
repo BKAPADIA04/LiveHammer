@@ -28,3 +28,10 @@ Managing rooms and namespaces.
 2) env
 3) UI (Call,Cancel,Volume,ScreenShare)
 4) Chat
+
+Chat 
+-> Why multiple users
+-> Setup proper Chat
+-> P2All and P2P
+-> Cancel option chat
+-> UI for chat

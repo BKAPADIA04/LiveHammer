@@ -17,7 +17,7 @@ videoRouter.get('/generateToken',(req,res) =>
     const channel = 'test';
     const uid = 0;
     const role = RtcRole.PUBLISHER;
-    const expireTime = 3600*24;
+    const expireTime = 3600*24*365;
 
     const token = RtcTokenBuilder.buildTokenWithUid(
         appID,

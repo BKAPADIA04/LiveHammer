@@ -40,6 +40,16 @@ module.exports = (server) => {
       const {to,answer} = data;
       io.to(to).emit('call:accepted',{from:socket.id, answer:answer})
     });
+
+    // Agora Chat
+    socket.on('agora:join', (data) => {
+      console.log(data);
+      const {channel} = data;
+      socket.join(channel);
+      io.to(channel).emit('agora:joined', {message:"Welcome to Auction Room!"});
+    });
+
+
     // Handle disconnection
     socket.on('disconnect', () => {
       console.log('User disconnected:', socket.id);
