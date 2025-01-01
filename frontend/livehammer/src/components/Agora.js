@@ -237,44 +237,82 @@ export default function Agora() {
                 <span className="stream-label border border-dark">Auctioneer</span>
             </div>
             <div className="chat-container m-2">
-                <div id="chat-player" className="video-box-chat border border-secondary shadow-sm d-flex flex-column rounded bg-light">
+                {/* Chat Box */}
+                <div id="chat-player" className="video-box-chat border border-secondary shadow-sm rounded bg-light d-flex flex-column"
+                style={{
+                    background: 'linear-gradient(135deg, #ece9e6, #ffffff)',
+                    borderColor: '#d3d3d3',
+                }}
+                >
                     {/* Chat Header */}
-                    <div className="chat-header bg-secondary text-white text-center py-2 rounded-top">
-                        <h5 className="m-0">💬 Live Chat</h5>
+                    <div className="chat-header bg-secondary text-white text-center py-3 rounded-top"
+                    style={{
+                        background: 'linear-gradient(90deg, #1a2b46, #1e3a5f)', // Darker gradient for header
+                        borderBottom: '1px solid #122033',
+                    }}
+                    >
+                        <h5 className="m-0 fw-bold text-white">💬 Live Chat</h5>
                     </div>
 
                     {/* Chat Messages */}
                     <div 
-                        className="chat-messages overflow-auto p-3 border-top border-bottom flex-grow-1" 
-                        style={{ maxHeight: '400px' }}
+                        className="chat-messages overflow-auto px-3 py-2 border-top border-bottom flex-grow-1" 
+                        style={{ maxHeight: '400px', backgroundColor:  '#f9f9f9'}}
                     >
-                        {/* Example Messages */}
                         {chatMessages.map((msg, index) => (
-                            <div key={index} className="chat-message mb-3">
-                                <strong className={msg.from === socket.id ? 'text-primary' : 'text-success'}>
-                                    {msg.from}:
-                                </strong>
-                                <span className="ms-2 text-secondary">{msg.message}</span>
+                            <div 
+                                key={index} 
+                                className={`chat-message d-flex mb-3 ${
+                                    msg.from === socket.id ? 'justify-content-end' : 'justify-content-start'
+                                }`}
+                            >
+                                <div
+                                    className={`message-bubble px-3 py-2 rounded shadow-sm ${
+                                        msg.from === socket.id
+                                            ? 'bg-dark text-white'
+                                            : 'bg-secondary text-white border'
+                                    }`}
+                                    style={{
+                                        maxWidth: '70%',
+                                        background: msg.from === socket.id
+                                            ? 'linear-gradient(135deg, #0D47A1, #1976D2)'  // Gradient for sender
+                                            : 'linear-gradient(135deg, #004D40, #00695C)', // Gradient for receiver
+                                    }}
+                                >
+                                    <strong className="d-block">
+                                        {msg.from === socket.id ? 'You' : msg.from}
+                                    </strong>
+                                    <span>{msg.message}</span>
+                                </div>
                             </div>
                         ))}
                         <div ref={chatEndRef} />
                     </div>
 
                     {/* Chat Input */}
-                    <div className="chat-input d-flex align-items-center p-2 rounded-bottom">
+                    <div className="chat-input d-flex align-items-center p-2 rounded-bottom bg-light"
+                    style={{ backgroundColor: '#fafafa', borderTop: '1px solid #ddd' }}
+                    >
                         <input 
                             type="text" 
                             id="chatInput" 
-                            className="form-control me-2 border-secondary" 
+                            className="form-control me-2 border-secondary shadow-sm" 
                             placeholder="Type your message..."
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleChat()}
                         />
-                        <button className="btn btn-primary px-4" id="sendMessageButton" onClick={handleChat}>Send</button>
+                        <button 
+                            className="btn btn-primary px-4 shadow-sm" 
+                            id="sendMessageButton" 
+                            onClick={handleChat}
+                        >
+                            Send
+                        </button>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 

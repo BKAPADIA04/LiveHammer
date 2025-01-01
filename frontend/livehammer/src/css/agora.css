@@ -233,3 +233,30 @@
 .chat-input button {
     font-size: 0.9rem;
 }
+
+/* Chat Bubble Styling */
+.message-bubble {
+    border-radius: 15px;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Chat Container */
+.chat-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Responsiveness */
+@media (max-width: 576px) {
+    .chat-container {
+        max-width: 100%;
+        padding: 0 10px;
+    }
+}
+
+/* Input Field Shadow */
+.chat-input input {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
