@@ -1,4 +1,4 @@
-import React,{useCallback, useState,useEffect} from 'react';
+import React,{useCallback, useState,useEffect,useRef} from 'react';
 import AgoraRTC from 'agora-rtc-sdk-ng';
 import { useNavigate } from "react-router-dom";
 import '../css/agora.css';
@@ -23,15 +23,37 @@ export default function Agora() {
 
 
     const socket = useSocket();
+    const [msgSenderId,setMsgSenderId] = useState('');
+    const [printMsg,setPrintMsg] = useState('');
+    const [chatMessages, setChatMessages] = useState([]);
+    const chatEndRef = useRef(null);
+
 
     useEffect(() => {
         socket.on('agora:joined', (data) => {
             console.log(data);
         });
+
+        socket.on('agora:messageReceive', (data) => {
+            console.log(data);  
+            setChatMessages((prev) => {
+                const isDuplicate = prev.some(
+                    (msg) => msg.from === data.from && msg.message === data.message
+                );
+                if (isDuplicate) return prev;
+    
+                return [...prev, data];
+            });
+        });
+
         return () => {
             socket.off('agora:joined', (data) => {
                 console.log(data);
             });
+
+            socket.off('agora:messageReceive', (data) => {
+                console.log(data);
+            })
         }
     },[socket]);
 
@@ -181,21 +203,81 @@ export default function Agora() {
       };
 
 
+    const [message, setMessage] = useState('');
+
+    const handleChat = useCallback(() => {
+        if (message) {
+            const outgoingMessage = { from: socket.id, message };
+            setChatMessages((prevMessages) => [...prevMessages, outgoingMessage]);
+            // Emit the message to the server
+            socket.emit('agora:message', {channel: channel, from : socket.id, message:message});
+            // Clear the chat input
+            setMessage('');
+        }
+    },[message, socket]);
+
+
+    // Automatically scroll to the bottom of the chat
+    useEffect(() => {
+        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [chatMessages]);
+
     return (
         <>  
         <div className="video-chat-container">
     {/* Header */}
     <div className="header">
-
         <h1 className='text-white fw-bold text-center p-2'>📺 LiveHammer 💸 💰 🔨</h1>
     </div>
 
     {/* Auctioneer's Stream */}
-    <div className="auctioneer-container">
-        <div id="auctioneer-player" className="video-box auctioneer-player border border-dark">
-            <span className="stream-label border border-dark">Auctioneer</span>
+    <div className='auction-screen-chat'>
+        <div className="auctioneer-container m-3">
+            <div id="auctioneer-player" className="video-box auctioneer-player border border-dark">
+                <span className="stream-label border border-dark">Auctioneer</span>
+            </div>
+            <div className="chat-container m-2">
+                <div id="chat-player" className="video-box-chat border border-secondary shadow-sm d-flex flex-column rounded bg-light">
+                    {/* Chat Header */}
+                    <div className="chat-header bg-secondary text-white text-center py-2 rounded-top">
+                        <h5 className="m-0">💬 Live Chat</h5>
+                    </div>
+
+                    {/* Chat Messages */}
+                    <div 
+                        className="chat-messages overflow-auto p-3 border-top border-bottom flex-grow-1" 
+                        style={{ maxHeight: '400px' }}
+                    >
+                        {/* Example Messages */}
+                        {chatMessages.map((msg, index) => (
+                            <div key={index} className="chat-message mb-3">
+                                <strong className={msg.from === socket.id ? 'text-primary' : 'text-success'}>
+                                    {msg.from}:
+                                </strong>
+                                <span className="ms-2 text-secondary">{msg.message}</span>
+                            </div>
+                        ))}
+                        <div ref={chatEndRef} />
+                    </div>
+
+                    {/* Chat Input */}
+                    <div className="chat-input d-flex align-items-center p-2 rounded-bottom">
+                        <input 
+                            type="text" 
+                            id="chatInput" 
+                            className="form-control me-2 border-secondary" 
+                            placeholder="Type your message..."
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleChat()}
+                        />
+                        <button className="btn btn-primary px-4" id="sendMessageButton" onClick={handleChat}>Send</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
 
     {/* Local Stream */}
     <div className="local-container border border-dark">
@@ -221,7 +303,7 @@ export default function Agora() {
             <div className="d-flex justify-content-center align-items-center gap-3">
                 {/* Toggle Microphone Button */}
                 <button 
-                    className={`btn ${isMicOn ? 'btn-danger' : 'btn-success'} d-flex btn-lg align-items-center`} 
+                    className={`btn ${isMicOn ? 'btn-danger' : 'btn-success'} d-flex btn-lg`} 
                     onClick={toggleMic}
                 >
                     <i className={`bi ${isMicOn ? 'bi-mic-fill' : 'bi-mic-mute-fill'} btn-lg me-2`} ></i>
@@ -230,14 +312,14 @@ export default function Agora() {
 
                 {/* Toggle Camera Button */}
                 <button 
-                    className={`btn ${isCameraOn ? 'btn-danger' : 'btn-success'} d-flex align-items-center`} 
+                    className={`btn ${isCameraOn ? 'btn-danger' : 'btn-success'} d-flex`} 
                     onClick={toggleCamera}
                 >
                     <i className={`bi ${isCameraOn ? 'bi-camera-video-fill' : 'bi-camera-video-off-fill'} me-2`}></i>
                     {isCameraOn ? 'Turn Off Camera' : 'Turn On Camera'}
                 </button>
             </div>
-            <button className="control-button end-call" onClick={cancelCall}>Cancel</button>
+            <button className="control-button btn-lg end-call" onClick={cancelCall}>Cancel</button>
         </div>
     </div>
     

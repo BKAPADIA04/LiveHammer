@@ -49,6 +49,12 @@ module.exports = (server) => {
       io.to(channel).emit('agora:joined', {message:"Welcome to Auction Room!"});
     });
 
+    socket.on('agora:message', (data) => {
+      console.log(data);
+      const {channel,from, message} = data;
+      io.to(channel).emit('agora:messageReceive', {from:from,message:message});
+    });
+
 
     // Handle disconnection
     socket.on('disconnect', () => {

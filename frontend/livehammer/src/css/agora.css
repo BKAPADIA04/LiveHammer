@@ -139,6 +139,16 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease;
 }
+.video-box-chat {
+    position: relative;
+    width: 30vw;  /* Increased width */
+    height: 70vh; /* Increased height */
+    background-color: #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
 
 .video-box-1 {
     position: relative;
@@ -202,4 +212,24 @@
 
 .end-call:hover {
     background: #c0392b;
+}
+
+
+.chat-container {
+    max-width: 400px;
+    height: 100%;
+    margin: auto;
+}
+
+.chat-messages {
+    font-size: 0.9rem; /* Slightly smaller font for compact display */
+    line-height: 1.4;  /* Improved line height for readability */
+}
+
+.chat-input input {
+    font-size: 0.9rem;
+}
+
+.chat-input button {
+    font-size: 0.9rem;
 }
