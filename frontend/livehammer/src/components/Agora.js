@@ -3,6 +3,7 @@ import AgoraRTC from 'agora-rtc-sdk-ng';
 import { useNavigate } from "react-router-dom";
 import '../css/agora.css';
 import { useSocket } from '../context/SocketProviderContext';
+import { useLocation } from 'react-router-dom';
 // require("dotenv").config();
 
 export default function Agora() {
@@ -12,7 +13,7 @@ export default function Agora() {
     console.log(appID);
     // const appCertificate = process.env.AGORA_PRIMARY_CERTIFICATE;
     // const agoraToken = process.env.AGORA_TEMP_TOKEN;
-    const agoraToken = "006846577752fa84fcbabed82e0fc1cfd6dIAB/eT6dYV71CiL84xN4FCEqHDl26B/94yP9/7FLxMSIjwx+f9gAAAAAIgDPOpKykYZ1ZwQAAQCRaFVpAgCRaFVpAwCRaFVpBACRaFVp";
+    const agoraToken = "006846577752fa84fcbabed82e0fc1cfd6dIACFGl9f2AzNCQ7d2QsWdsUO/Hvbxr7mKedQniJlaBhjvAx+f9gAAAAAIgBUgNpfp/J/ZwQAAQCn1F9pAgCn1F9pAwCn1F9pBACn1F9p";
     console.log(agoraToken);
     const channel = 'test';
     const uid = 0;
@@ -28,6 +29,13 @@ export default function Agora() {
     const [chatMessages, setChatMessages] = useState([]);
     const chatEndRef = useRef(null);
 
+    const location = useLocation();
+    const {email} = location.state || {};
+    socket.emit('agora:join', {
+        channel: channel,
+        uid:uid,
+        email:email
+    });
 
     useEffect(() => {
         socket.on('agora:joined', (data) => {
@@ -158,11 +166,6 @@ export default function Agora() {
             const audioTrack = user.audioTrack;
             audioTrack.play();
         }
-
-        socket.emit('agora:join', {
-            channel: channel,
-            uid:uid
-        });
     }
 
 
@@ -257,7 +260,7 @@ export default function Agora() {
                     {/* Chat Messages */}
                     <div 
                         className="chat-messages overflow-auto px-3 py-2 border-top border-bottom flex-grow-1" 
-                        style={{ maxHeight: '400px', backgroundColor:  '#f9f9f9'}}
+                        style={{ maxHeight: '400px', backgroundColor:  '#866d8f'}}
                     >
                         {chatMessages.map((msg, index) => (
                             <div 
@@ -269,7 +272,7 @@ export default function Agora() {
                                 <div
                                     className={`message-bubble px-3 py-2 rounded shadow-sm ${
                                         msg.from === socket.id
-                                            ? 'bg-dark text-white'
+                                            ? 'bg-dark text-white border'
                                             : 'bg-secondary text-white border'
                                     }`}
                                     style={{
@@ -290,8 +293,8 @@ export default function Agora() {
                     </div>
 
                     {/* Chat Input */}
-                    <div className="chat-input d-flex align-items-center p-2 rounded-bottom bg-light"
-                    style={{ backgroundColor: '#fafafa', borderTop: '1px solid #ddd' }}
+                    <div className="chat-input d-flex align-items-center p-2 rounded-bottom"
+                    style={{ backgroundColor: '#ccc', borderTop: '1px solid #ddd' }}
                     >
                         <input 
                             type="text" 

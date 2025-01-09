@@ -1,4 +1,10 @@
 const { Server } = require('socket.io');
+const {getUserInMeet,getUserModel} = require('../../models.js')
+
+const UserInMeet = getUserInMeet();
+const User = getUserModel();
+const express = require('express');
+const mongoose = require('mongoose');
 
 module.exports = (server) => {
   // Initialize Socket.IO
@@ -11,6 +17,12 @@ module.exports = (server) => {
 
   const emailToSocketId = new Map();
   const socketIdToEmail = new Map();
+
+  const findUserByEmail =  (email) => {
+      return User.findOne({ email }).exec();
+  };
+
+
 
   // Handle Socket.IO connections
   io.on('connection', (socket) => {
@@ -42,11 +54,27 @@ module.exports = (server) => {
     });
 
     // Agora Chat
-    socket.on('agora:join', (data) => {
+    socket.on('agora:join', async(data) => {
       console.log(data);
-      const {channel} = data;
-      socket.join(channel);
-      io.to(channel).emit('agora:joined', {message:"Welcome to Auction Room!"});
+      const {email,channel} = data;
+        try {
+          // Query the database to retrieve user by email
+          const user = await findUserByEmail(email);
+
+          if (user) {
+              console.log(`User with email ${email} found, user details: ${user.name}`);
+              socket.join(channel); // User is joining the channel
+              // Send a welcome message to the channel
+              io.to(channel).emit('agora:joined', { message: "Welcome to the Auction Room!" });
+          } else {
+              console.log(`User with email ${email} not found.`);
+              // Optionally, you can send an error response to the user
+              socket.emit('agora:error', { message: 'User not found in the system' });
+          }
+      } catch (error) {
+          console.error('Error fetching user for Agora join:', error);
+          socket.emit('agora:error', { message: 'Error while fetching user details' });
+      }
     });
 
     socket.on('agora:message', (data) => {

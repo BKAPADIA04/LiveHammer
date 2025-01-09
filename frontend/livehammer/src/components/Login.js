@@ -71,7 +71,7 @@ export default function Login() {
         const data = await response.json();
         setLoading(false);
         if (data.success === true) {
-            navigate('/agora');
+            navigate('/agora',{state:{email:email}});
             setEmail('');
             setOtp(['', '', '', '', '', '']);
             setOtpSent(false);

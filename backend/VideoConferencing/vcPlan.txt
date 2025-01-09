@@ -35,3 +35,10 @@ Chat
 -> P2All and P2P
 -> Cancel option chat
 -> UI for chat
+
+
+-> Chat Storage
+
+Firstly, implement persons in the room.
+Next find out how to store different chats
+Thirdly, print proper names in the chat instead of ids
