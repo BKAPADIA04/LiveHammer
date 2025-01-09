@@ -22,6 +22,10 @@ module.exports = (server) => {
       return User.findOne({ email }).exec();
   };
 
+  const findUserInMeet = (email) => {
+    return UserInMeet.findOne({ email }).exec();
+  };
+
 
 
   // Handle Socket.IO connections
@@ -64,8 +68,43 @@ module.exports = (server) => {
           if (user) {
               console.log(`User with email ${email} found, user details: ${user.name}`);
               socket.join(channel); // User is joining the channel
+              try {
+                let userInMeeting = await findUserInMeet(email);
+                // let userInMeeting = await UserInMeet.findOne({ email });
+                if(!userInMeeting) {
+                    userInMeeting = new UserInMeet({
+                      socketId: socket.id,
+                      email:email,
+                      name: user.name,
+                      phone: user.phone,
+                      totalPurseRemaining: user.totalPurseRemaining,
+                      totalPurseSpent: user.totalPurseSpent,
+                      itemsBought: user.itemsBought,
+                      wishlist: user.wishlist,
+                      address: {
+                          city: user.address.city,
+                          state: user.address.state,
+                          pincode: user.address.pincode,
+                      }
+                  });
+                  const doc = await userInMeeting.save();
+                  console.log('UserInMeet instance saved:', userInMeeting);
+                }
+                else {
+                  userInMeeting.socketId = socket.id;
+                  await userInMeeting.save();
+                  console.log('UserInMeet instance updated with new socket ID:', userInMeeting);
+                }
+              } catch (error) {
+                if (error.code === 11000) {
+                  // Ignore duplicate key error
+                    console.log('Duplicate entry detected, ignoring...');
+                } else {
+                    throw error; // Re-throw other errors
+                }
+              }
               // Send a welcome message to the channel
-              io.to(channel).emit('agora:joined', { message: "Welcome to the Auction Room!" });
+              io.to(channel).emit('agora:joined', { message: `Welcome to the Auction Room, ${user.name}!` });
           } else {
               console.log(`User with email ${email} not found.`);
               // Optionally, you can send an error response to the user

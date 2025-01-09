@@ -1,7 +1,7 @@
 const express = require('express');
 const videoRouter = express.Router();
 const { RtcTokenBuilder, RtcRole } = require("agora-access-token");
-
+const {getUserInMeet} = require("../../models.js");
 const { body } = require('express-validator');
 
 videoRouter.get('/',(req,res) =>
