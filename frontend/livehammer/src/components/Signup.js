@@ -71,7 +71,7 @@ export default function Signup() {
         const data = await response.json();
         setLoading(false);
         if (data.success === true) {
-            navigate('/signup/information');
+            navigate('/signup/information',{state:{email:email}});
             setEmail('');
             setOtp(['', '', '', '', '', '']);
             setOtpSent(false);

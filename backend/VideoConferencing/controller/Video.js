@@ -116,7 +116,7 @@ module.exports = (server) => {
                 }
               }
               // Send a welcome message to the channel
-              io.to(channel).emit('agora:joined', { message: `Welcome to the Auction Room, ${user.name}!` });
+              io.to(channel).emit('agora:joined', { message: `Welcome to the Auction Room, ${user.name}!`});
           } else {
               console.log(`User with email ${email} not found.`);
               // Optionally, you can send an error response to the user
@@ -131,7 +131,7 @@ module.exports = (server) => {
     socket.on('agora:message', (data) => {
       console.log(data);
       const {channel,from, message} = data;
-      io.to(channel).emit('agora:messageReceive', {from:from,message:message});
+      io.to(channel).emit('agora:messageReceive',{from:from,message:message});
     });
 
     // Cache to track already processed users

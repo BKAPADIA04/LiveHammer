@@ -28,7 +28,7 @@ videoRouter.get('/generateToken',(req,res) =>
         Math.floor(Date.now() / 1000) + expireTime
       );
 
-    res.json({ 'Token' : token });
+    res.json({ 'appID' : appID, 'appCertificate' : appCertificate, 'uid' : uid, 'channel' : channel, 'Token' : token });
 
 });
 

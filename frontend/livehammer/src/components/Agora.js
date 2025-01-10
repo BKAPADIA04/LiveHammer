@@ -7,16 +7,38 @@ import { useLocation } from 'react-router-dom';
 // require("dotenv").config();
 
 export default function Agora() {
+    const [appID, setAppID] = useState('');
+    const [agoraToken, setAgoraToken] = useState('');
+    const [appCertificate, setAppCertificate] = useState('');
+    const [channel, setChannel] = useState('');
+    const [uid, setUid] = useState(0);
 
-    // const appID = process.env.AGORA_API_ID;
-    const appID = '846577752fa84fcbabed82e0fc1cfd6d';
-    console.log(appID);
-    // const appCertificate = process.env.AGORA_PRIMARY_CERTIFICATE;
-    // const agoraToken = process.env.AGORA_TEMP_TOKEN;
-    const agoraToken = "006846577752fa84fcbabed82e0fc1cfd6dIADH3+RDMIZ9I8zDm7ANYOxqhB0uJ6x/J5+Z9n4Q0lLlNgx+f9gAAAAAIgDYtUXCDXGCZwQAAQANU2JpAgANU2JpAwANU2JpBAANU2Jp";
-    console.log(agoraToken);
-    const channel = 'test';
-    const uid = 0;
+
+    const generateAgoraAPI = async() => {
+        const host = 'http://localhost:8080';
+        const response = await fetch(`${host}/video/generateToken`);
+        const data = await response.json();
+
+        setAppID(data.appID);
+        setAgoraToken(data.Token);
+        setAppCertificate(data.appCertificate);
+        setChannel(data.channel);
+        setUid(data.uid);
+        console.log(appID,agoraToken,appCertificate,channel,uid);
+    }
+
+    useEffect(() => {
+        const initializeAgora = async () => {
+          try {
+            await generateAgoraAPI(); // Fetch Agora details
+          } catch (error) {
+            console.error('Error generating Agora API details:', error);
+          }
+        };
+      
+        initializeAgora();
+      }, []);
+      
 
     const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
     const [localTracks, setLocalTracks] = useState([]);
@@ -37,6 +59,11 @@ export default function Agora() {
         email:email
     });
 
+    const [localUser,setLocalUser] = useState({
+        email:email,
+        socketId:socket.id,
+        name:''
+    });
     useEffect(() => {
         socket.on('agora:joined', (data) => {
             console.log(data);
@@ -135,7 +162,7 @@ export default function Agora() {
         } catch (error) {
             console.error('Error leaving the call:', error);
         }
-        navigate('/user/dashboard');
+        navigate('/user/dashboard',{state:{email:email}});
     }, [client, localTracks, navigate]);
     
 

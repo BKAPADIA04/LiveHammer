@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import auctionImageLeft from '../images/otp_back_left.jpg';
+import { useLocation } from 'react-router-dom';
 // import '../css/custom.css';
 
 export default function SignupInfo() {
@@ -17,6 +18,9 @@ export default function SignupInfo() {
         },
     });
     const [error, setError] = useState('');
+
+    const location = useLocation();
+    const {email} = location.state || {};
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -55,7 +59,7 @@ export default function SignupInfo() {
         const data = await response.json();
         console.log(data);
         if (data.success === true) {
-            navigate('/agora');
+            navigate('/agora',{state:{email:email}});
             setFormData({
                 name: '',
                 email: '',
