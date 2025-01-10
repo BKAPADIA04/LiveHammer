@@ -26,7 +26,19 @@ module.exports = (server) => {
     return UserInMeet.findOne({ email }).exec();
   };
 
-
+  const findUserInMeetLeave = async (email) => {
+    try {
+      const user = await UserInMeet.findOne({ email }).exec();
+      if (user) {
+        return { success: true, user }; // User found
+      } else {
+        return { success: false, user: null }; // User not found
+      }
+    } catch (error) {
+      console.error('Error while fetching user in meeting:', error);
+      return { success: false, error }; // Error during query
+    }
+  };
 
   // Handle Socket.IO connections
   io.on('connection', (socket) => {
@@ -88,12 +100,12 @@ module.exports = (server) => {
                       }
                   });
                   const doc = await userInMeeting.save();
-                  console.log('UserInMeet instance saved:', userInMeeting);
+                  // console.log('UserInMeet instance saved:', userInMeeting);
                 }
                 else {
                   userInMeeting.socketId = socket.id;
                   await userInMeeting.save();
-                  console.log('UserInMeet instance updated with new socket ID:', userInMeeting);
+                  // console.log('UserInMeet instance updated with new socket ID:', userInMeeting);
                 }
               } catch (error) {
                 if (error.code === 11000) {
@@ -121,6 +133,67 @@ module.exports = (server) => {
       const {channel,from, message} = data;
       io.to(channel).emit('agora:messageReceive', {from:from,message:message});
     });
+
+    // Cache to track already processed users
+const processedUsers = new Set();
+
+socket.on('agora:leave', async (data) => {
+  console.log(data);
+  const { email, channel } = data;
+
+  try {
+    // Check if the user is already processed
+    if (processedUsers.has(email)) {
+      console.log(`User with email ${email} has already been processed. Skipping.`);
+      return;
+    }
+
+    // Query the database to retrieve user by email
+    const user = await findUserByEmail(email);
+
+    if (user) {
+      console.log(`User with email ${email} found, user details: ${user.name}`);
+      socket.leave(channel); // User is leaving the channel
+
+      try {
+        // Check if the user exists in the meeting
+        const userInMeetingResult = await findUserInMeetLeave(email);
+
+        if (userInMeetingResult.success) {
+          // Delete the user from the meeting
+          await UserInMeet.deleteOne({ email });
+          io.to(channel).emit('agora:left', { message: `Goodbye, ${user.name}!` });
+        } else {
+          console.log(`User with email ${email} is not in the meeting. Skipping.`);
+        }
+      } catch (error) {
+        if (error instanceof mongoose.Error.DocumentNotFoundError) {
+          console.log(`User with email ${email} was already removed. Adding to processed list.`);
+        } else if (error.code === 11000) {
+          console.log('Duplicate entry detected, ignoring...');
+        } else {
+          console.error('Error processing user in meeting:', error);
+          socket.emit('agora:error', { message: 'Error while processing user in meeting' });
+        }
+      }
+    } else {
+      console.log(`User with email ${email} not found. Adding to processed list.`);
+    }
+
+    // Mark user as processed to avoid repeated errors
+    processedUsers.add(email);
+  } catch (error) {
+    if (error instanceof mongoose.Error.DocumentNotFoundError) {
+      console.log(`User with email ${email} not found during fetch. Adding to processed list.`);
+      processedUsers.add(email);
+    } else {
+      console.error('Error fetching user for Agora leave:', error);
+      socket.emit('agora:error', { message: 'Error while fetching user details' });
+    }
+  }
+});
+
+    
 
 
     // Handle disconnection

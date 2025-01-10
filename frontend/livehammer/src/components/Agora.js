@@ -13,7 +13,7 @@ export default function Agora() {
     console.log(appID);
     // const appCertificate = process.env.AGORA_PRIMARY_CERTIFICATE;
     // const agoraToken = process.env.AGORA_TEMP_TOKEN;
-    const agoraToken = "006846577752fa84fcbabed82e0fc1cfd6dIACFGl9f2AzNCQ7d2QsWdsUO/Hvbxr7mKedQniJlaBhjvAx+f9gAAAAAIgBUgNpfp/J/ZwQAAQCn1F9pAgCn1F9pAwCn1F9pBACn1F9p";
+    const agoraToken = "006846577752fa84fcbabed82e0fc1cfd6dIADH3+RDMIZ9I8zDm7ANYOxqhB0uJ6x/J5+Z9n4Q0lLlNgx+f9gAAAAAIgDYtUXCDXGCZwQAAQANU2JpAgANU2JpAwANU2JpBAANU2Jp";
     console.log(agoraToken);
     const channel = 'test';
     const uid = 0;
@@ -61,7 +61,7 @@ export default function Agora() {
 
             socket.off('agora:messageReceive', (data) => {
                 console.log(data);
-            })
+            });
         }
     },[socket]);
 
@@ -101,6 +101,13 @@ export default function Agora() {
         try {
             // Leave the channel
             await client.leave();
+            
+            // socket.emit('agora:leave', {
+            //     channel: channel,
+            //     uid:uid,
+            //     email:email
+            // });
+
     
             // Stop and release local tracks
             if (localTracks.length > 0) {
@@ -121,6 +128,8 @@ export default function Agora() {
             setIsMicOn(true);
             setIsCameraOn(true);
             setIsJoined(false);
+
+
     
             console.log('Call canceled and resources cleaned up.');
         } catch (error) {

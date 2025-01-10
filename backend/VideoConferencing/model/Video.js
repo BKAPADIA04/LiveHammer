@@ -5,7 +5,6 @@ const userInMeetSchema = new Schema({
     socketId: {
         type: String,
         required: true,
-        unique: true,
         trim: true,
     },  
   name: {
