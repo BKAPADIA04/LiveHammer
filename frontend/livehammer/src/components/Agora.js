@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import '../css/agora.css';
 import { useSocket } from '../context/SocketProviderContext';
 import { useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPrice,setObjectName } from '../redux/auctionSlice';
 // require("dotenv").config();
 
 export default function Agora() {
@@ -240,7 +242,7 @@ export default function Agora() {
             setIsCameraOn(!isCameraOn);
         }
       };
-
+      
 
     const [message, setMessage] = useState('');
 
@@ -255,11 +257,31 @@ export default function Agora() {
         }
     },[message, socket]);
 
+    // Redux Code
+
+    // const dispatch = useDispatch();
+    // const currentPrice = useSelector((state) => state.auction.currentPrice);
+    // const objectName = useSelector((state) => state.auction.objectName);
+
+    // useEffect(() => {
+    //     socket.on('auction:priceUpdate', (data) => {
+    //         // Update the Redux state with the real-time price and object name
+    //         dispatch(setPrice(data.price));
+    //         dispatch(setObjectName(data.objectName));
+    //     });
+
+    //     return () => {
+    //         socket.off('auction:priceUpdate');
+    //     };
+    // }, [socket, dispatch]);
 
     // Automatically scroll to the bottom of the chat
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [chatMessages]);
+
+
+
 
     return (
         <>  
