@@ -1,6 +1,6 @@
 const { Server } = require('socket.io');
-const {getUserInMeet,getUserModel} = require('../../models.js')
-
+const {getUserInMeet,getUserModel} = require('../../models.js');
+const {setBid} = require('../../Bidding/controller/Bid.js');
 const UserInMeet = getUserInMeet();
 const User = getUserModel();
 const express = require('express');
@@ -193,7 +193,12 @@ socket.on('agora:leave', async (data) => {
   }
 });
 
-    
+    socket.on('auction:priceUpdate',(data) => {
+      const {from,channel,currentPrice} = data;
+      console.log(data);
+      io.to(channel).emit('auction:emittingNewPrice',{from:from,currentPrice:currentPrice});
+      // call setBit for database
+    });
 
 
     // Handle disconnection

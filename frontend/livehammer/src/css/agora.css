@@ -260,3 +260,28 @@
 .chat-input input {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+
+.controls button {
+    min-width: 150px; /* Ensure buttons have consistent size */
+}
+
+.controls .btn i {
+    font-size: 1.5rem; /* Adjust icon size for consistency */
+}
+
+.popup-menu {
+    position: absolute;
+    right: 10px;
+    bottom: 12%;
+    background-color: #f8f9fa; /* Light gray background */
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: 200px; /* Adjust width as needed */
+}
+
+.popup-menu button {
+    width: 100%; /* Make buttons stretch full width */
+}

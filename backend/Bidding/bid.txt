@@ -5,6 +5,12 @@
 
 -> React Redux
 
+Make Buttons
+Redux will keep check of the price
+Communication of the price to the backend using socketio
+Design Buttons
+
+
 Features:
 -> Predefined Increment in Bids
 -> Countdown timer (30 seconds after each bid)
@@ -37,3 +43,10 @@ Allow users to form bidding teams, pool resources, and bid collaboratively on hi
 
 -> Shared Notes and Analytics
 Provide tools for teams to take notes, analyze bidding trends, and strategize together during or before auctions.
+
+
+-> Ensuree that the new client has the updated price value
+-> Different Price Tags
+-> Display Current Bid
+-> Timer to finalize the bids
+-> 

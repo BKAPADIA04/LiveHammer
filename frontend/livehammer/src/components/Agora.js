@@ -257,11 +257,9 @@ export default function Agora() {
         }
     },[message, socket]);
 
-    // Redux Code
 
-    // const dispatch = useDispatch();
-    // const currentPrice = useSelector((state) => state.auction.currentPrice);
-    // const objectName = useSelector((state) => state.auction.objectName);
+    
+    // console.log(currentPrice,objectName);
 
     // useEffect(() => {
     //     socket.on('auction:priceUpdate', (data) => {
@@ -275,11 +273,44 @@ export default function Agora() {
     //     };
     // }, [socket, dispatch]);
 
+    // Bidding Code
+    const dispatch = useDispatch();
+    const currentPrice = useSelector((state) => state.auction.currentPrice);
+    const objectName = useSelector((state) => state.auction.objectName);
+
+    const fixBid = useCallback(async() => {
+        const newPrice = currentPrice + 10;
+        console.log(newPrice);
+        socket.emit('auction:priceUpdate',{from:email,channel:channel,currentPrice:newPrice});
+        dispatch(setPrice(newPrice));
+    },[channel, currentPrice, dispatch, email, socket]);
+
     // Automatically scroll to the bottom of the chat
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [chatMessages]);
 
+    useEffect(() => {
+        const handleNewPrice = async (data) => {
+            const { currentPrice } = data;
+            console.log('New price received:', currentPrice);
+            dispatch(setPrice(currentPrice)); // Update Redux state
+        };
+        socket.on('auction:emittingNewPrice',async (data) => {
+            handleNewPrice(data);
+        })
+
+        return () => {
+            socket.off('auction:emittingNewPrice',(data) => {console.log(data)});
+        }
+    },[socket]);
+
+
+    const [showPopup, setShowPopup] = React.useState(false);
+
+
+    // Bidding Code
+    
 
 
 
@@ -396,32 +427,65 @@ export default function Agora() {
         </div>
     </div>
 
-    {/* Controls */}
-    <div className="controls">
-        <button className="control-button btn-lg" onClick={joinStream}>Call</button>
-            <div className="d-flex justify-content-center align-items-center gap-3">
-                {/* Toggle Microphone Button */}
+    <div className="controls d-flex justify-content-between align-items-center p-3">
+    {/* Center Buttons: Share Screen, Chat, Record */}
+    <div className="center-buttons d-flex justify-content-center gap-3">
+        <button className="btn btn-primary btn-lg" onClick={fixBid}>
+            <i className="bi bi-display me-2">Bid 10</i>
+        </button>
+        <button className="btn btn-secondary btn-lg" onClick={fixBid}>
+            <i className="bi bi-chat-dots me-2">Bid 20</i>
+        </button>
+        <button className="btn btn-warning btn-lg" onClick={fixBid}>
+            <i className="bi bi-record-circle me-2">Bid 30</i>
+        </button>
+        <div class="current-price text-center p-3 bg-dark rounded shadow">
+            <h3 class="text-primary fw-bold">Current Price: Rs.<span id="current-price-value">{currentPrice}</span></h3>
+        </div>
+        <div class="current-price text-center p-3 bg-dark rounded shadow">
+            <h3 class="text-primary fw-bold">Current Bid: <span id="current-price-value">{currentPrice}</span></h3>
+        </div>
+    </div>
+
+    
+
+    {/* Right-side Toggle Button */}
+    <div className="right-buttons">
+        <button 
+            className="btn btn-info" 
+            onClick={() => setShowPopup(!showPopup)} // Toggles popup state
+        >
+            <i className="bi bi-three-dots"></i> Call Options
+        </button>
+
+        {/* Popup with Additional Buttons */}
+        {showPopup && (
+            <div className="popup-menu d-flex flex-column gap-3 p-3">
+                <button className="btn btn-primary" onClick={joinStream}>
+                    Call
+                </button>
                 <button 
-                    className={`btn ${isMicOn ? 'btn-danger' : 'btn-success'} d-flex btn-lg`} 
+                    className={`btn ${isMicOn ? 'btn-danger' : 'btn-success'} btn-lg d-flex align-items-center`}
                     onClick={toggleMic}
                 >
-                    <i className={`bi ${isMicOn ? 'bi-mic-fill' : 'bi-mic-mute-fill'} btn-lg me-2`} ></i>
+                    <i className={`bi ${isMicOn ? 'bi-mic-fill' : 'bi-mic-mute-fill'} me-2`}></i>
                     {isMicOn ? 'Mute' : 'Unmute'}
                 </button>
-
-                {/* Toggle Camera Button */}
                 <button 
-                    className={`btn ${isCameraOn ? 'btn-danger' : 'btn-success'} d-flex`} 
+                    className={`btn ${isCameraOn ? 'btn-danger' : 'btn-success'} btn-lg d-flex align-items-center`}
                     onClick={toggleCamera}
                 >
                     <i className={`bi ${isCameraOn ? 'bi-camera-video-fill' : 'bi-camera-video-off-fill'} me-2`}></i>
                     {isCameraOn ? 'Turn Off Camera' : 'Turn On Camera'}
                 </button>
+                <button className="btn btn-danger btn-lg" onClick={cancelCall}>
+                    Cancel
+                </button>
             </div>
-            <button className="control-button btn-lg end-call" onClick={cancelCall}>Cancel</button>
-        </div>
+        )}
     </div>
-    
+</div>
+    </div>
     </>
       );    
 }

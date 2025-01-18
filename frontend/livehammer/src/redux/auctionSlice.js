@@ -3,8 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const auctionSlice = createSlice({
     name: 'auction',
     initialState: {
-        currentPrice: 0, // Real-time price
-        objectName: '', // Name of the auctioned object
+        currentPrice: 1000, // Real-time price
+        objectName: 'Bat', // Name of the auctioned object
     },
     reducers: {
         setPrice: (state, action) => {
