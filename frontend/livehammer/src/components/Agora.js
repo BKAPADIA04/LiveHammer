@@ -5,7 +5,7 @@ import '../css/agora.css';
 import { useSocket } from '../context/SocketProviderContext';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPrice,setObjectName } from '../redux/auctionSlice';
+import { setPrice,setObjectName,setCurrentBidder } from '../redux/auctionSlice';
 // require("dotenv").config();
 
 export default function Agora() {
@@ -277,12 +277,30 @@ export default function Agora() {
     const dispatch = useDispatch();
     const currentPrice = useSelector((state) => state.auction.currentPrice);
     const objectName = useSelector((state) => state.auction.objectName);
+    const currentBidder = useSelector((state) => state.auction.currentBidder);
 
-    const fixBid = useCallback(async() => {
+    const fixBid_1 = useCallback(async() => {
         const newPrice = currentPrice + 10;
         console.log(newPrice);
         socket.emit('auction:priceUpdate',{from:email,channel:channel,currentPrice:newPrice});
         dispatch(setPrice(newPrice));
+        dispatch(setCurrentBidder(email));
+    },[channel, currentPrice, dispatch, email, socket]);
+
+    const fixBid_2 = useCallback(async() => {
+        const newPrice = currentPrice + 20;
+        console.log(newPrice);
+        socket.emit('auction:priceUpdate',{from:email,channel:channel,currentPrice:newPrice});
+        dispatch(setPrice(newPrice));
+        dispatch(setCurrentBidder(email));
+    },[channel, currentPrice, dispatch, email, socket]);
+
+    const fixBid_3 = useCallback(async() => {
+        const newPrice = currentPrice + 30;
+        console.log(newPrice);
+        socket.emit('auction:priceUpdate',{from:email,channel:channel,currentPrice:newPrice});
+        dispatch(setPrice(newPrice));
+        dispatch(setCurrentBidder(email));
     },[channel, currentPrice, dispatch, email, socket]);
 
     // Automatically scroll to the bottom of the chat
@@ -292,9 +310,10 @@ export default function Agora() {
 
     useEffect(() => {
         const handleNewPrice = async (data) => {
-            const { currentPrice } = data;
+            const { from,currentPrice } = data;
             console.log('New price received:', currentPrice);
             dispatch(setPrice(currentPrice)); // Update Redux state
+            dispatch(setCurrentBidder(from)); // Update Redux state
         };
         socket.on('auction:emittingNewPrice',async (data) => {
             handleNewPrice(data);
@@ -430,20 +449,20 @@ export default function Agora() {
     <div className="controls d-flex justify-content-between align-items-center p-3">
     {/* Center Buttons: Share Screen, Chat, Record */}
     <div className="center-buttons d-flex justify-content-center gap-3">
-        <button className="btn btn-primary btn-lg" onClick={fixBid}>
-            <i className="bi bi-display me-2">Bid 10</i>
+        <button className="btn btn-primary btn-lg" onClick={fixBid_1}>
+            <i className="bi bi-display me-2">Bid 10!</i>
         </button>
-        <button className="btn btn-secondary btn-lg" onClick={fixBid}>
-            <i className="bi bi-chat-dots me-2">Bid 20</i>
+        <button className="btn btn-secondary btn-lg" onClick={fixBid_2}>
+            <i className="bi bi-chat-dots me-2">Bid 20!</i>
         </button>
-        <button className="btn btn-warning btn-lg" onClick={fixBid}>
-            <i className="bi bi-record-circle me-2">Bid 30</i>
+        <button className="btn btn-warning btn-lg" onClick={fixBid_3}>
+            <i className="bi bi-record-circle me-2">Bid 30!</i>
         </button>
         <div class="current-price text-center p-3 bg-dark rounded shadow">
             <h3 class="text-primary fw-bold">Current Price: Rs.<span id="current-price-value">{currentPrice}</span></h3>
         </div>
         <div class="current-price text-center p-3 bg-dark rounded shadow">
-            <h3 class="text-primary fw-bold">Current Bid: <span id="current-price-value">{currentPrice}</span></h3>
+            <h3 class="text-primary fw-bold">Current Bid: <span id="current-price-value">{currentBidder}</span></h3>
         </div>
     </div>
 

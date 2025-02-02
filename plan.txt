@@ -69,3 +69,4 @@ Step 10: CI/CD Pipeline
 -> Smaller Icon buttons for video call
 -> Product 3D Display
 -> Add MVC Architecture in resume
+-> The auction buttons are shown after connection

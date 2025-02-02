@@ -5,6 +5,7 @@ const auctionSlice = createSlice({
     initialState: {
         currentPrice: 1000, // Real-time price
         objectName: 'Bat', // Name of the auctioned object
+        currentBidder:'None'
     },
     reducers: {
         setPrice: (state, action) => {
@@ -13,9 +14,12 @@ const auctionSlice = createSlice({
         setObjectName: (state, action) => {
             state.objectName = action.payload;
         },
+        setCurrentBidder: (state, action) => {
+            state.currentBidder = action.payload;
+        },
     },
 });
 
-export const { setPrice, setObjectName } = auctionSlice.actions;
+export const { setPrice, setObjectName, setCurrentBidder } = auctionSlice.actions;
 
 export default auctionSlice.reducer;
