@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPrice,setObjectName,setCurrentBidder } from '../redux/auctionSlice';
 // require("dotenv").config();
 
+
 export default function Agora() {
     const [appID, setAppID] = useState('');
     const [agoraToken, setAgoraToken] = useState('');
@@ -329,13 +330,84 @@ export default function Agora() {
 
 
     // Bidding Code
-    
+    const [timeLeft, setTimeLeft] = useState(30);
+    const timerRef = useRef(null);
 
+    useEffect(() => {
+        timerRef.current = setInterval(() => {
+            setTimeLeft(prevTime => {
+                if (prevTime <= 1) {
+                    clearInterval(timerRef.current);
+                    return 0;
+                }
+                return prevTime - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timerRef.current);
+    }, []);
+
+const CountdownTimer = ({ initialSeconds }) => {
+    const [seconds, setSeconds] = useState(initialSeconds);
+    const radius = 50;
+    const stroke = 8;
+    const normalizedRadius = radius - stroke * 0.5;
+    const circumference = normalizedRadius * 2 * Math.PI;
+
+    useEffect(() => {
+        if (seconds > 0) {
+            const timer = setInterval(() => {
+                setSeconds(prev => prev - 1);
+            }, 1000);
+            return () => clearInterval(timer);
+        }
+    }, [seconds]);
+
+    const progress = (seconds / initialSeconds) * 100;
+    const strokeDashoffset = circumference - (progress / 100) * circumference;
+
+    return (
+        <div className="position-absolute top-0 start-0 m-3">
+            <svg height={radius * 2} width={radius * 2}>
+                <circle
+                    stroke="#e6e6e6"
+                    fill="transparent"
+                    strokeWidth={stroke}
+                    r={normalizedRadius}
+                    cx={radius}
+                    cy={radius}
+                />
+                <circle
+                    stroke="green"
+                    fill="transparent"
+                    strokeWidth={stroke}
+                    strokeDasharray={`${circumference} ${circumference}`}
+                    style={{ strokeDashoffset, transition: 'stroke-dashoffset 1s linear' }}
+                    r={normalizedRadius}
+                    cx={radius}
+                    cy={radius}
+                />
+                <text
+                    x="50%"
+                    y="50%"
+                    textAnchor="middle"
+                    dy="0.3em"
+                    fontSize="18"
+                    fill="#000"
+                    fontWeight="bold"
+                >
+                    {seconds}s
+                </text>
+            </svg>
+        </div>
+    );
+};
 
 
     return (
         <>  
         <div className="video-chat-container">
+        <CountdownTimer initialSeconds={30} />
     {/* Header */}
     <div className="header">
         <h1 className='text-white fw-bold text-center p-2'>📺 LiveHammer 💸 💰 🔨</h1>
