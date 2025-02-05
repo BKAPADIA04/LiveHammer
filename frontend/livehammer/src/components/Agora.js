@@ -286,6 +286,7 @@ export default function Agora() {
         socket.emit('auction:priceUpdate',{from:email,channel:channel,currentPrice:newPrice});
         dispatch(setPrice(newPrice));
         dispatch(setCurrentBidder(email));
+        setTimerKey(prevKey => prevKey + 1);
     },[channel, currentPrice, dispatch, email, socket]);
 
     const fixBid_2 = useCallback(async() => {
@@ -294,6 +295,7 @@ export default function Agora() {
         socket.emit('auction:priceUpdate',{from:email,channel:channel,currentPrice:newPrice});
         dispatch(setPrice(newPrice));
         dispatch(setCurrentBidder(email));
+        setTimerKey(prevKey => prevKey + 1);
     },[channel, currentPrice, dispatch, email, socket]);
 
     const fixBid_3 = useCallback(async() => {
@@ -302,6 +304,7 @@ export default function Agora() {
         socket.emit('auction:priceUpdate',{from:email,channel:channel,currentPrice:newPrice});
         dispatch(setPrice(newPrice));
         dispatch(setCurrentBidder(email));
+        setTimerKey(prevKey => prevKey + 1);
     },[channel, currentPrice, dispatch, email, socket]);
 
     // Automatically scroll to the bottom of the chat
@@ -347,7 +350,8 @@ export default function Agora() {
         return () => clearInterval(timerRef.current);
     }, []);
 
-const CountdownTimer = ({ initialSeconds }) => {
+const [timerKey, setTimerKey] = useState(0);
+const CountdownTimer = ({ initialSeconds , key}) => {
     const [seconds, setSeconds] = useState(initialSeconds);
     const radius = 50;
     const stroke = 8;
@@ -370,7 +374,7 @@ const CountdownTimer = ({ initialSeconds }) => {
         <div className="position-absolute top-0 start-0 m-3">
             <svg height={radius * 2} width={radius * 2}>
                 <circle
-                    stroke="#e6e6e6"
+                    stroke="#fff"
                     fill="transparent"
                     strokeWidth={stroke}
                     r={normalizedRadius}
@@ -393,7 +397,7 @@ const CountdownTimer = ({ initialSeconds }) => {
                     textAnchor="middle"
                     dy="0.3em"
                     fontSize="18"
-                    fill="#000"
+                    fill="orange"
                     fontWeight="bold"
                 >
                     {seconds}s
@@ -407,12 +411,11 @@ const CountdownTimer = ({ initialSeconds }) => {
     return (
         <>  
         <div className="video-chat-container">
-        <CountdownTimer initialSeconds={30} />
     {/* Header */}
     <div className="header">
         <h1 className='text-white fw-bold text-center p-2'>📺 LiveHammer 💸 💰 🔨</h1>
     </div>
-
+    <CountdownTimer initialSeconds={30} key={timerKey}/>
     {/* Auctioneer's Stream */}
     <div className='auction-screen-chat'>
         <div className="auctioneer-container m-3">
@@ -471,7 +474,6 @@ const CountdownTimer = ({ initialSeconds }) => {
                         ))}
                         <div ref={chatEndRef} />
                     </div>
-
                     {/* Chat Input */}
                     <div className="chat-input d-flex align-items-center p-2 rounded-bottom"
                     style={{ backgroundColor: '#ccc', borderTop: '1px solid #ddd' }}
@@ -495,7 +497,7 @@ const CountdownTimer = ({ initialSeconds }) => {
                     </div>
                 </div>
             </div>
-
+            <CountdownTimer initialSeconds={30} />
         </div>
     </div>
 
