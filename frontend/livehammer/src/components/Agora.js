@@ -165,7 +165,7 @@ export default function Agora() {
         } catch (error) {
             console.error('Error leaving the call:', error);
         }
-        navigate('/user/dashboard',{state:{email:email}});
+        navigate('/user/payment',{state:{email:email,payment:currentPrice}});
     }, [client, localTracks, navigate]);
     
 
@@ -572,7 +572,7 @@ const CountdownTimer = ({ initialSeconds , key}) => {
                     {isCameraOn ? 'Turn Off Camera' : 'Turn On Camera'}
                 </button>
                 <button className="btn btn-danger btn-lg" onClick={cancelCall}>
-                    Cancel
+                    Cancel/Payment
                 </button>
             </div>
         )}

@@ -8,7 +8,7 @@ import Agora from './components/Agora';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import SignupInfo from './components/SignupInfo';
-import Dashboard from './components/Dashboard';
+import Payment from './components/Payment';
 
 
 const AppRoutes = () => {
@@ -20,7 +20,7 @@ const AppRoutes = () => {
     { path:'/login',element:<Login/>},
     { path:'/signup',element:<Signup/>},
     { path: '/signup/information', element: <SignupInfo/> },
-    { path: '/user/dashboard', element: <Dashboard/> },
+    { path: '/user/payment', element: <Payment/> },
   ]);
   return routes;
 };

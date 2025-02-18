@@ -33,6 +33,10 @@ server.use('/user',userRouter.userRoute);
 const videoRouter = require('./VideoConferencing/routes/Video.js');
 server.use('/video',videoRouter.videoRoute);
 
+//Payment
+const paymentRouter = require('./Payment/routes/Payment.js');
+server.use('/payment',paymentRouter.paymentRoute);
+
 
 httpServer.listen(port, () => {
   console.log(`LiveHammer App listening on port ${port}`)
