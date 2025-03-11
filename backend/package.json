@@ -11,6 +11,7 @@
   "author": "Bhavya Kapadia",
   "license": "ISC",
   "dependencies": {
+    "@stripe/stripe-js": "^6.0.0",
     "agora-access-token": "^2.0.4",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",

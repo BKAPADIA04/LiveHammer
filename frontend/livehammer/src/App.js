@@ -9,6 +9,8 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import SignupInfo from './components/SignupInfo';
 import Payment from './components/Payment';
+import Success from './components/Success';
+import Cancel from './components/Cancel';
 
 
 const AppRoutes = () => {
@@ -21,6 +23,8 @@ const AppRoutes = () => {
     { path:'/signup',element:<Signup/>},
     { path: '/signup/information', element: <SignupInfo/> },
     { path: '/user/payment', element: <Payment/> },
+    { path: '/user/payment/success', element: <Success/> },
+    {path:'/user/payment/cancel',element:<Cancel/>}
   ]);
   return routes;
 };

@@ -12,4 +12,6 @@ paymentRouter.get('/',(req,res) =>
 
 paymentRouter.post('/sendStripeCredentials',Payment.sendStripeCredentials);
 
+paymentRouter.post('/checkoutSession',Payment.checkoutSession);
+
 exports.paymentRoute = paymentRouter;
