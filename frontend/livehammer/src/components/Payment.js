@@ -7,9 +7,6 @@ export default function Payment() {
   const { email, payment } = location.state || {};
 
   const [stripePublishableKey, setStripePublishableKey] = useState('');
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiry, setExpiry] = useState('');
-  const [cvv, setCvv] = useState('');
 
   useEffect(() => {
     const getStripeCredentials = async () => {
@@ -42,10 +39,6 @@ export default function Payment() {
     if (result.error) {
       console.log(result.error.message);
     }
-
-    setCardNumber('');
-    setExpiry('');
-    setCvv('');
     console.log(result);
     return result;
   };
