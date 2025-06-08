@@ -43,8 +43,22 @@ git clone https://github.com/BKAPADIA04/LiveHammer.git
 cd LiveHammer
 
 # Install backend dependencies
+cd backend
 npm install
 
 # Move to frontend
-cd client
+cd frontend
 npm install
+
+### 🧾 Environment Variables
+
+Create the required `.env` files using the following bash command from the root of the project:
+
+```bash
+# Create .env for backend and client/.env for frontend
+echo -e "PORT=5000\nMONGO_URI=your_mongodb_connection_string\nJWT_SECRET=your_secret_key\nAGORA_APP_ID=your_agora_app_id\nAGORA_APP_CERTIFICATE=your_agora_app_certificate" > .env && \
+mkdir -p client && \
+echo -e "REACT_APP_AGORA_APP_ID=your_agora_app_id" > client/.env
+
+
+
