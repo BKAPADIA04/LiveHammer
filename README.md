@@ -20,7 +20,7 @@
 
 | Layer           | Technology                            |
 |----------------|----------------------------------------|
-| Frontend        | React, Tailwind CSS, Agora SDK        |
+| Frontend        | React, BootStrap CSS, Agora SDK        |
 | Backend         | Node.js, Express, Socket.IO           |
 | Database        | MongoDB with Mongoose                 |
 | Authentication  | JWT (JSON Web Tokens)                 |
@@ -72,45 +72,13 @@ npm run dev
 cd client
 npm start
 ## 🎮 Usage
+```
 
 - Register and log in as a seller or bidder.
 - Sellers can create new auctions with start price and timer.
 - Start the live video stream.
 - Bidders join the auction room and start bidding live.
 - The highest bidder at the end wins and is notified in real-time.
-
----
-
-## 🧪 Testing
-
-- **Backend:** Use `npm test` (Jest or Mocha)
-- **Frontend:** Run `npm test` inside `/client`
-
----
-
-## 🛰 Deployment
-
-- Backend can be deployed to Heroku, Render, or any Node.js-compatible host.
-- Frontend can be deployed to Netlify, Vercel, or GitHub Pages.
-
-To build the frontend for production:
-
-```bash
-cd client
-npm run build
-```
-
-📌 Roadmap
-Add integrated payment system
-
-Record and replay auction videos
-
-Email/SMS notifications for bidders
-
-Admin dashboard for analytics
-
-Better mobile optimizations
-
 
 ## 📝 License
 
