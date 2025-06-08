@@ -60,5 +60,54 @@ echo -e "PORT=5000\nMONGO_URI=your_mongodb_connection_string\nJWT_SECRET=your_se
 mkdir -p client && \
 echo -e "REACT_APP_AGORA_APP_ID=your_agora_app_id" > client/.env
 
+## 🧪 Running the App Locally
+
+Run both backend and frontend with the following commands (in separate terminals or using a tool like concurrently):
+
+```bash
+# Start backend
+npm run dev
+
+# In a new terminal, start frontend
+cd client
+npm start
+## 🎮 Usage
+
+- Register and log in as a seller or bidder.
+- Sellers can create new auctions with start price and timer.
+- Start the live video stream.
+- Bidders join the auction room and start bidding live.
+- The highest bidder at the end wins and is notified in real-time.
+
+---
+
+## 🧪 Testing
+
+- **Backend:** Use `npm test` (Jest or Mocha)
+- **Frontend:** Run `npm test` inside `/client`
+
+---
+
+## 🛰 Deployment
+
+- Backend can be deployed to Heroku, Render, or any Node.js-compatible host.
+- Frontend can be deployed to Netlify, Vercel, or GitHub Pages.
+
+To build the frontend for production:
+
+```bash
+cd client
+npm run build
+
+📌 Roadmap
+Add integrated payment system
+
+Record and replay auction videos
+
+Email/SMS notifications for bidders
+
+Admin dashboard for analytics
+
+Better mobile optimizations
 
 
