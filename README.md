@@ -98,6 +98,7 @@ To build the frontend for production:
 ```bash
 cd client
 npm run build
+```
 
 📌 Roadmap
 Add integrated payment system
@@ -109,5 +110,26 @@ Email/SMS notifications for bidders
 Admin dashboard for analytics
 
 Better mobile optimizations
+
+
+## 📝 License
+
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
+
+---
+
+## 👤 Author
+
+**Bhavya Kapadia**  
+GitHub: [@BKAPADIA04](https://github.com/BKAPADIA04)
+
+---
+
+## 🌟 Acknowledgements
+
+- [Agora](https://www.agora.io/) for video streaming  
+- [Socket.IO](https://socket.io/) for real-time communication  
+- [MongoDB](https://www.mongodb.com/) for database  
+- [React](https://reactjs.org/) for frontend framework
 
 
